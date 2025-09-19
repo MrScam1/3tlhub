@@ -1984,6 +1984,7 @@ function GetQuest(QuestTables, Boss)
         TP1(QuestTables["QuestCFrame"])
         return GetQuest(QuestTables, Boss)
     else
+        wait(2)
         CommF:InvokeServer("StartQuest", tostring(QuestTables["QuestName"]),
         QuestTables["QuestId"])
     end
