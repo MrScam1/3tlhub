@@ -1,6 +1,6 @@
 getgenv().BFSettings = {
     Team = "Pirates", -- Marines
-    FpsBooster = false,
+    FpsBooster = true,
     BlackScreen = false,
     LockFrag = 15000,
     AwakFruit = true,
@@ -825,7 +825,7 @@ local function CanStoreFruit(fruit)
     return false
 end
 function StoreFruit()
-    for a, b in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+    for a, b in pairs(LocalPlayer.Backpack:GetChildren()) do
         if string.match(b.Name, "Fruit$") then
             local name = b.Name:match("(%S+)")
             local fruit = name .. "-" .. name
@@ -837,7 +837,7 @@ function StoreFruit()
             end
         end
     end
-    for a, b in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren()) do
+    for a, b in pairs(Character:GetChildren()) do
         if string.match(b.Name, "Fruit$") then
             local name = b.Name:match("(%S+)")
             local fruit = name .. "-" .. name
@@ -869,7 +869,7 @@ function PriorityQueue:empty()
 end
 
 local queue = PriorityQueue:new()
-function CheckNearestRequestIsland2(pos)
+function CheckNearestRequestIsland2(pos, tpinstant)
     local nearestIsland = nil
     local nearestDist = math.huge
     for name, cframe in pairs(Request_Places) do
@@ -881,8 +881,19 @@ function CheckNearestRequestIsland2(pos)
             nearestIsland = name
         end
     end
+    for name, islandPos in pairs(Request_Places2) do
+        if World3 or Level.Value < 10 or GetDistance(pos) < 1500 or not tpinstant then break end
+        local dist = GetDistance(islandPos, pos)
+        local distoplr = GetDistance(islandPos)
+        if distoplr <= 9500 and dist < nearestDist then
+            nearestDist = dist
+            nearestIsland = name
+        end
+    end
     if nearestIsland then
-        if GetDistance(Request_Places[nearestIsland], pos) < GetDistance(pos) then
+        if Request_Places2[nearestIsland] then
+            return (LastSpawn.Value ~= nearestIsland or GetDistance(Request_Places2[nearestIsland]) >= 1500) and nearestIsland
+        elseif GetDistance(Request_Places[nearestIsland], pos) < GetDistance(pos) then
             return nearestIsland
         end
     end
@@ -1108,7 +1119,7 @@ local function shouldtp(instant)
     if not instant or CheckBackPack({"Special Microchip", "Flower 1", "Flower 2", "Flower 3", "Fist of Darkness", "Sweet Chalice", "God's Chalice", "Hallow Essence"}) then return false end
     return true
 end
-function TP1(Pos)
+function TP1(Pos, notinstant)
     local lastPauseTime = tick()
     local tween
     local fkwarp = false
@@ -1132,8 +1143,7 @@ function TP1(Pos)
             VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
         end
         if World3 then
-            if GetDistance(Pos, CFrame.new(10439, -1962, 9697)) <= 5000 then
-                print(Pos)
+            if GetDistance(Pos, CFrame.new(10439, -1962, 9697)) <= 10000 then
                 if not workspace.Map:FindFirstChild('Submerged Island') then
                     if not workspace.NPCs:FindFirstChild('Submarine Worker') then
                         TP1(CFrame.new(-16270, 25, 1374))
@@ -1145,7 +1155,7 @@ function TP1(Pos)
                         until workspace.Map:FindFirstChild('Submerged Island')
                     end
                 end
-            elseif GetDistance(CFrame.new(10439, -1962, 9697)) <= 5000 then
+            elseif GetDistance(CFrame.new(10439, -1962, 9697)) <= 10000 then
                 if GetDistance(CFrame.new(11427.9189, -2156.36401, 9726.24023)) > 8 then
                     TP1(CFrame.new(11427.9189, -2156.36401, 9726.24023))
                 end
@@ -1153,15 +1163,24 @@ function TP1(Pos)
                     repeat
                         Modules.Net["RF/SubmarineTransportation"]:InvokeServer("InitiateTeleport","Tiki Outpost")
                         wait(1)
-                    until GetDistance(CFrame.new(10439, -1962, 9697)) > 5000
+                    until GetDistance(CFrame.new(10439, -1962, 9697)) > 10000
                     return
                 end
             end
         end
         Distance = q1(Pos.Position, game.Players.LocalPlayer.Character.HumanoidRootPart.Position)
-        local request_place = CheckNearestRequestIsland2(Pos)
+        local request_place = CheckNearestRequestIsland2(Pos, shouldtp(not notinstant))
         if request_place then
-            if Request_Places[request_place] and checkcanentrance() and not fkwarp then
+            if Request_Places2[request_place] and shouldtp(not notinstant) and (not tween or Character.Humanoid.FloorMaterial ~= Enum.Material.Air) then
+                if PlrData:FindFirstChild("LastSpawnPoint") and type(PlrData.LastSpawnPoint.Value) == "string" and PlrData.LastSpawnPoint.Value ~= "SubmergedIsland" and (PlrData.LastSpawnPoint.Value ~= request_place or GetDistance(Request_Places2[request_place]) >= 1500) then
+                    if tween then tween:Cancel() end
+                    if IsPlayerAlive() then
+                        setlastspawn(request_place)
+                    end
+                    repeat wait() until IsPlayerAlive()
+                    return
+                end
+            elseif Request_Places[request_place] and checkcanentrance() and not fkwarp then
                 rqentrance(request_place)
                 Distance = q1(Pos)
                 fkwarp = true
@@ -1607,7 +1626,7 @@ function BringMob(Enemy, BringCFrame, notLimit)
     for i, v in pairs(workspace.Enemies:GetChildren()) do
         local dis = GetDistance(v.HumanoidRootPart.CFrame, BringCFrame)
         if not notLimit and #getHead() >= 2 then return end
-        if v and v.Name == BringName and skidymf(v) and isnetworkowner(v.HumanoidRootPart) and isnetworkowner2(v.HumanoidRootPart) and dis <= 300 and dis < min and not v:HasTag('realmob') and not v:HasTag("Brought") and not v:HasTag('ignore') then
+        if v and v.Name == Enemy.Name and skidymf(v) and isnetworkowner(v.HumanoidRootPart) and isnetworkowner2(v.HumanoidRootPart) and dis <= 300 and dis < min and not v:HasTag('realmob') and not v:HasTag("Brought") and not v:HasTag('ignore') then
             mob, min = v, dis
         end
         if mob then
@@ -2331,26 +2350,44 @@ end
     return false
 end]]
 function CheckFruit(v)
-    if string.find(v.Name, "Fruit") and v:FindFirstChild "Handle" and v.Handle.Position.Y > 0 and getrealname(v) and CanStoreFruit(getrealname(v)) then
+    if string.find(v.Name, "Fruit$") and v:FindFirstChild "Handle" and v.Handle.Position.Y > 0 and getrealname(v) and CanStoreFruit(getrealname(v)) then
         table.insert(ServerData.ServerFruit, v)
         print('Added Fruit: '.. getrealname(v).. ' Count: '.. tostring(#ServerData.ServerFruit))
-        local selfs
-        selfs = v:GetPropertyChangedSignal('Parent'):Connect(function()
-            if v.Parent ~= game.workspace then
+        local conn1, conn2
+
+        -- Parent thay đổi
+        conn1 = v:GetPropertyChangedSignal("Parent"):Connect(function()
+            if v.Parent ~= game.Workspace then
                 for i,obj in ipairs(ServerData.ServerFruit) do
                     if obj == v then
                         table.remove(ServerData.ServerFruit, i)
-                        print('Removed Fruit:'..v.Name.. ' Count: '.. tostring(#ServerData.ServerFruit))
+                        print('Removed Fruit: '.. v.Name .. ' Count: '.. tostring(#ServerData.ServerFruit))
                         break
                     end
                 end
-                selfs:Disconnect()
+                if conn2 then conn2:Disconnect() end
+                conn1:Disconnect()
+            end
+        end)
+
+        -- Theo dõi Y và Handle
+        conn2 = game:GetService("RunService").Heartbeat:Connect(function()
+            if not v.Parent or not v:FindFirstChild("Handle") or v.Handle.Position.Y < 0 then
+                for i,obj in ipairs(ServerData.ServerFruit) do
+                    if obj == v then
+                        table.remove(ServerData.ServerFruit, i)
+                        print('Removed Fruit (invalid): '.. v.Name .. ' Count: '.. tostring(#ServerData.ServerFruit))
+                        break
+                    end
+                end
+                if conn1 then conn1:Disconnect() end
+                conn2:Disconnect()
             end
         end)
     end
 end
 for i, v in pairs(game.workspace:GetChildren()) do
-    if string.find(v.Name, "Fruit") and v:FindFirstChild "Handle" then print(v.Name) end
+    if string.find(v.Name, "Fruit$") and v:FindFirstChild "Handle" then print(v.Name) end
     task.spawn(CheckFruit, v)
 end
 game.workspace.ChildAdded:Connect(CheckFruit)
@@ -2523,17 +2560,17 @@ end
 
 function AutoSecondSea()
     CommF:InvokeServer("TravelDressrosa")
-    local Status = CommF:InvokeServer("DressrosaQuestProgress")
-    if not Status.UsedKey then
+    repeat wait() until CommF:InvokeServer("DressrosaQuestProgress") and type(CommF:InvokeServer("DressrosaQuestProgress")) == "table"
+    if not CommF:InvokeServer("DressrosaQuestProgress").UsedKey then
         getgenv().CurrentFarmTaskDoing = 'Getting key to pass the door'
         repeat
             task.wait()
-            TP1(CFrame.new(1347.7124, 37.3751602, -1325.6488))
             CommF:InvokeServer("DressrosaQuestProgress", "Detective")
             EquipWeapon('Key')
-        until Status.UsedKey
+            TP1(CFrame.new(1347.7124, 37.3751602, -1325.6488))
+        until CommF:InvokeServer("DressrosaQuestProgress").UsedKey
     end
-    if Status.UsedKey and not Status.KilledIceBoss then
+    if CommF:InvokeServer("DressrosaQuestProgress").UsedKey and not CommF:InvokeServer("DressrosaQuestProgress").KilledIceBoss then
         getgenv().CurrentFarmTaskDoing = 'Finding Ice Admiral'
         if workspace._WorldOrigin.EnemySpawns:FindFirstChild"Ice Admiral [Lv. 700] [Boss]" then TP1(workspace._WorldOrigin.EnemySpawns["Ice Admiral [Lv. 700] [Boss]"].CFrame) repeat wait() until Bosses["Ice Admiral"] end
         if Bosses["Ice Admiral"] then
@@ -3462,7 +3499,7 @@ function tweenfruit()
             getgenv().CurrentFarmTaskDoing = 'Collecting '.. v.Name
             repeat wait()
                 Sex_Tween = NormalTween(v.Handle.CFrame)
-            until not v.Parent or v.Parent ~= game.workspace
+            until not v or not v.Parent or v.Parent ~= game.workspace
             Sex_Tween:Cancel()
             VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
             wait(0.1)
