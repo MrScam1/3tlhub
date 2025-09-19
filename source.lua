@@ -1,6 +1,6 @@
 getgenv().BFSettings = {
     Team = "Pirates", -- Marines
-    FpsBooster = true,
+    FpsBooster = false,
     BlackScreen = false,
     LockFrag = 15000,
     AwakFruit = true,
@@ -823,7 +823,7 @@ function PriorityQueue:empty()
 end
 
 local queue = PriorityQueue:new()
-function CheckNearestRequestIsland2(pos, tpinstant)
+function CheckNearestRequestIsland2(pos)
     local nearestIsland = nil
     local nearestDist = math.huge
     for name, cframe in pairs(Request_Places) do
@@ -937,10 +937,69 @@ function checkcanentrance()
     return game.PlaceId ~= 7449423635 or checkinv("Valkyrie Helm")
 end
 
-
+function NormalTween(Pos)
+    if not IsPlayerAlive() then return end
+    local tween
+    if World3 then
+        if GetDistance(CFrame.new(10439, -1962, 9697)) <= 5000 then
+            print(Pos)
+            print(GetDistance(CFrame.new(10439, -1962, 9697)))
+            if GetDistance(CFrame.new(11427.9189, -2156.36401, 9726.24023)) > 8 then
+                TP1(CFrame.new(11427.9189, -2156.36401, 9726.24023))
+            end
+            if GetDistance(CFrame.new(11427.9189, -2156.36401, 9726.24023)) <= 8 then
+                repeat
+                    Modules.Net["RF/SubmarineTransportation"]:InvokeServer("InitiateTeleport","Tiki Outpost")
+                    wait(1)
+                until GetDistance(CFrame.new(10439, -1962, 9697)) > 5000
+                return
+            end
+        end
+    end
+    Distance = q1(Pos.Position, game.Players.LocalPlayer.Character.HumanoidRootPart.Position)
+    local request_place = CheckNearestRequestIsland2(Pos, true)
+    if request_place then
+        if Request_Places2[request_place] and Character.Humanoid.FloorMaterial ~= Enum.Material.Air then
+            if PlrData:FindFirstChild("LastSpawnPoint") and type(PlrData.LastSpawnPoint.Value) == "string" and PlrData.LastSpawnPoint.Value ~= "SubmergedIsland" and (PlrData.LastSpawnPoint.Value ~= request_place or GetDistance(Request_Places2[request_place]) >= 1500) then
+                if tween then tween:Cancel() end
+                if IsPlayerAlive() then
+                    setlastspawn(request_place)
+                end
+                repeat wait() until IsPlayerAlive()
+                return
+            end
+        elseif Request_Places[request_place] and checkcanentrance() and not fkwarp then
+            rqentrance(request_place)
+            Distance = q1(Pos)
+            fkwarp = true
+        end
+    end
+    if Pos.Position.Y > 0 and math.abs(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y - Pos.Position.Y) > 50 then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X,
+            Pos.Position.Y,
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z
+        )
+        wait(.5)
+    end
+    if Distance <= 50 then
+        Time = 0
+    elseif Distance <= 200 then
+        Time = 0.25
+    else
+        Time = Distance / 350
+    end
+    tween = game:GetService("TweenService"):Create(
+        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new(Time, Enum.EasingStyle.Linear),
+        { CFrame = Pos }
+    )
+    tween:Play()
+    return tween
+end
 
 function StopTween()
-    TP1(LocalPlayer.Character.HumanoidRootPart.CFrame)
+    NormalTween(LocalPlayer.Character.HumanoidRootPart.CFrame)
 end
 
 function AddVelocity()
@@ -1000,10 +1059,10 @@ function rqentrance(request_place)
     end
 end
 local function shouldtp(instant)
-    if not instant or CheckBackPack({"Special Microchip", "Flower 1", "Flower 2", "Flower 3", "Fist of Darkness", "Sweet Chalice", "God's Chalice"}) then return false end
+    if not instant or CheckBackPack({"Special Microchip", "Flower 1", "Flower 2", "Flower 3", "Fist of Darkness", "Sweet Chalice", "God's Chalice", "Hallow Essence"}) then return false end
     return true
 end
-function TP1(Pos, notinstant)
+function TP1(Pos)
     local lastPauseTime = tick()
     local tween
     local fkwarp = false
@@ -1028,6 +1087,7 @@ function TP1(Pos, notinstant)
         end
         if World3 then
             if GetDistance(Pos, CFrame.new(10439, -1962, 9697)) <= 5000 then
+                print(Pos)
                 if not workspace.Map:FindFirstChild('Submerged Island') then
                     if not workspace.NPCs:FindFirstChild('Submarine Worker') then
                         TP1(CFrame.new(-16270, 25, 1374))
@@ -1053,7 +1113,7 @@ function TP1(Pos, notinstant)
             end
         end
         Distance = q1(Pos.Position, game.Players.LocalPlayer.Character.HumanoidRootPart.Position)
-        local request_place = CheckNearestRequestIsland2(Pos, shouldtp(not notinstant))
+        local request_place = CheckNearestRequestIsland2(Pos)
         if request_place then
             if Request_Places[request_place] and checkcanentrance() and not fkwarp then
                 rqentrance(request_place)
@@ -1862,118 +1922,77 @@ TableQuests = setmetatable({}, {__index = function(t, k)
     end
     return nil
 end})
-GetQuest = function(level)
-    local L, m, rs = level or game.Players.LocalPlayer.Data.Level.Value, 0, game.ReplicatedStorage
-    local qs, gd, nm, nq, id = require(rs.Quests), require(rs.GuideModule).Data.QuestData
-    local cs1, cs2 = CheckSea(1), CheckSea(2)
-    local cmCyborg, cmTide = Bosses.Cyborg, Bosses['Tide Keeper']
-
-    for qn, v in next, qs do
-        if not ({DailyQuest=1, RaceQuest=1, BartiloQuest=1, Trainees=1, MarineQuest=1, CitizenQuest=1, ForgottenQuest=1})[qn] 
-           and qn ~= "ImpelQuest" then -- Thêm ForgottenQuest vào danh sách loại trừ
-
-            for i, q in next, v do
-                for k in next, q.Task do
-                    if L >= q.LevelReq and q.LevelReq >= m and q.Task[k] > 0 then
-                        if L >= 700 and cs1 then
-                            m, nm, nq, id = 700, cmCyborg and "Cyborg" or "Galley Captain", "FountainQuest", cmCyborg and 3 or 2
-                        elseif qn == "MarineQuest2" and L >= 130 then
-                            local cmVA = CheckMonster("Vice Admiral")
-                            m, nm, nq, id = q.LevelReq, cmVA and "Vice Admiral" or "Chief Petty Officer", "MarineQuest2", cmVA and 2 or 1
-                        elseif qn == "FireSideQuest" and L >= 1150 then
-                            local cmVA = CheckMonster("Smoke Admiral")
-                            m, nm, nq, id = q.LevelReq,
-                                cmVA and "Smoke Admiral" or (L >= 1200 and "Lava Pirate" or "Magma Ninja"),
-                                (cmVA and "IceSideQuest" or "FireSideQuest"),
-                                cmVA and 3 or (L >= 1200 and 2 or 1)
-                        elseif i < 3 then
-                            m, nm, nq, id = q.LevelReq, k, qn, i
-                        elseif i == 3 and CheckMonster(k) then
-                            m, nm, nq, id = q.LevelReq, k, qn, i
-                        end
-                    end
+function GetQuest(QuestTables, Boss)
+    --[[if game.Players.LocalPlayer.PlayerGui.Main:FindFirstChild("Quest").Visible then
+        return
+    end]]
+    getgenv().CurrentFarmTaskDoing = 'Getting quest'
+    table.foreach(QuestTables, print)
+    if not QuestTables or not QuestTables["Mob"] or not QuestTables["QuestName"] or not QuestTables["LevelReq"] or not QuestTables["QuestId"] or not QuestTables["QuestCFrame"] then
+        if Boss then
+            QuestTables = CheckBossQuest()
+        else
+            QuestTables = CheckQuestByLevel()
+        end
+        return
+    end
+    print('CFrame Quest: '.. tostring(QuestTables["QuestCFrame"]))
+    if GetDistance(QuestTables["QuestCFrame"] * CFrame.new(0, 0, -2)) > 5 then
+        TP1(QuestTables["QuestCFrame"])
+        return GetQuest(QuestTables, Boss)
+    else
+        CommF:InvokeServer("StartQuest", tostring(QuestTables["QuestName"]),
+        QuestTables["QuestId"])
+    end
+end
+function CheckQuestByLevel(cq)
+    local cq = cq or {}
+    local lvlPl = cq.Level or Level.Value
+    local LevelMaxReq = 99999
+    local DoubleQuest = cq.DoubleQuest or false
+    local Returner = {
+        ["LevelReq"] = 0,
+        ["Mob"] = "",
+        ["QuestName"] = "",
+        ["QuestId"] = 0,
+    }
+    if game.PlaceId == 2753915549 then
+        LevelMaxReq = 699
+    elseif game.PlaceId == 4442272183 then
+        LevelMaxReq = 1475
+    end
+    for i, v in pairs(Quests) do
+        for i1, v1 in pairs(v) do
+            local lvlreq = v1.LevelReq
+            for i2, v2 in pairs(v1.Task) do
+                if
+                    lvlPl >= lvlreq and lvlreq >= Returner["LevelReq"] and lvlreq <= LevelMaxReq and v1.Task[i2] > 1 and
+                    not table.find(UselessQuest, tostring(i))
+                then
+                    Returner["LevelReq"] = lvlreq
+                    Returner["Mob"] = tostring(i2)
+                    Returner["QuestName"] = i
+                    Returner["QuestId"] = i1
                 end
             end
         end
     end
-
-    -- ImpelQuest
-    if qs and type(qs.ImpelQuest) == "table" then
-        for i, q in ipairs(qs.ImpelQuest) do 
-            if type(q) == "table" and type(q.Task) == "table" then
-                for monsterName, taskValue in pairs(q.Task) do
-                    if L >= q.LevelReq and q.LevelReq > m and taskValue > 0 then
-                        if CheckMonster(monsterName) then
-                            m, nm, nq, id = q.LevelReq, monsterName, "ImpelQuest", i
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    -- ForgottenQuest
-    if cs2 and qs and type(qs.ForgottenQuest) == "table" then
-        for i, q in ipairs(qs.ForgottenQuest) do 
-            if type(q) == "table" and type(q.Task) == "table" then
-                for monsterName, taskValue in pairs(q.Task) do
-                    if L >= q.LevelReq and q.LevelReq > m and taskValue > 0 then
-                        if CheckMonster(monsterName) then
-                            m, nm, nq, id = q.LevelReq, monsterName, "ForgottenQuest", i
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    -- GuideModule Task
-    for k in next, gd and gd.Task or {} do
-        if k == nm and L >= 10 then
-            for qn, v in next, qs do
-                if qn == "MarineQuest2" then
-                    if nm == "Chief Petty Officer" and Bosses['Vice Admiral'] and L >= 130 and v[2] and v[2].Task then
-                        for kk, c in next, v[2].Task do
-                            if kk ~= nm and c > 0 and v[2].LevelReq <= L then
-                                return {
-                                    NameMonster = kk,
-                                    NameQuest = "MarineQuest2",
-                                    ID = 2,
-                                    LevelReq = v[2].LevelReq
-                                }
-                            end
-                        end
-                    end
-
-                elseif (qn == "FireSideQuest" or qn == "IceSideQuest") and L >= 1150 and Bosses['Smoke Admiral'] then
-                    return {
-                        NameMonster = "Smoke Admiral",
-                        NameQuest = "IceSideQuest",
-                        ID = 3,
-                        LevelReq = 1150
-                    }
-
-                else
-                    for _, q in next, v do
-                        if q.Task[nm] then
-                            for id, qq in next, v do
-                                for kk, c in next, qq.Task do
-                                    if kk ~= nm and c > 0 and qq.LevelReq <= L and (id < 3 or Bosses[kk]) then
-                                        if L >= 700 and cs1 then
-                                            return {
-                                                NameMonster = cmCyborg and "Cyborg" or "Galley Pirate",
-                                                NameQuest = "FountainQuest",
-                                                ID = cmCyborg and 3 or 1,
-                                                LevelReq = 700
-                                            }
-                                        else
-                                            return {
-                                                NameMonster = kk,
-                                                NameQuest = qn,
-                                                ID = id,
-                                                LevelReq = m
-                                            }
-                                        end
+    if DoubleQuest and IsHavingQuest() then
+        if
+            lvlPl >= 10 and IsHavingQuest() and
+            CheckCurrentQuestMob() == Returner["Mob"]
+        then
+            for i, v in pairs(Quests) do
+                for _, v1 in pairs(v) do
+                    if v1.Task[Returner["Mob"]] then
+                        for id, Data in next, v do
+                            for nm, count in next, Data.Task do
+                                print(nm, CheckCurrentQuestMob())
+                                if tostring(nm) ~= CheckCurrentQuestMob() and count > 1 then
+                                    if Data.LevelReq <= lvlPl then
+                                        Returner["Mob"]       = tostring(nm)
+                                        Returner["QuestName"] = i
+                                        Returner["QuestId"]   = id
                                     end
                                 end
                             end
@@ -1982,11 +2001,53 @@ GetQuest = function(level)
                 end
             end
         end
-    end 
-
-    return {NameMonster = nm, NameQuest = nq, ID = id, LevelReq = m}
+    end
+    Returner["QuestCFrame"] = QuestsCFrame[Returner["LevelReq"]] or (NPCLists:FindFirstChild(FakeGuideModule[Returner["QuestName"]]) and NPCLists[FakeGuideModule[Returner["QuestName"]]]:GetPivot())
+    if not Returner["QuestCFrame"] then
+        local count = tick()
+        repeat 
+            Returner["QuestCFrame"] = QuestsCFrame[Returner["LevelReq"]] or (NPCLists:FindFirstChild(FakeGuideModule[Returner["QuestName"]]) and NPCLists[FakeGuideModule[Returner["QuestName"]]]:GetPivot())
+            wait(1)
+        until Returner["QuestCFrame"] or tick() - count >=5
+        if tick() - count >=5 then HopServer() end
+    end
+    return Returner
 end
 
+function CheckBossQuest()
+    local Level = game:GetService("Players").LocalPlayer.Data.Level.Value
+    local Quests = require(game:GetService("ReplicatedStorage").Quests)
+    local Returner = {
+        ["LevelReq"] = 0,
+        ["Mob"] = "",
+        ["QuestName"] = "",
+        ["QuestId"] = 0
+    }
+    for i, v in pairs(Quests) do
+        for i1, v1 in pairs(v) do
+            if i ~= "CitizenQuest" and i ~= "BartiloQuest" and v1["LevelReq"] <= Level then
+                for i2, v2 in pairs(v1["Task"]) do
+                    if v2 == 1 then
+                        Returner["LevelReq"] = math.max(Returner["LevelReq"], v1["LevelReq"])
+                    end
+                end
+            end
+        end
+    end
+    for i, v in pairs(Quests) do
+        for i1, v1 in pairs(v) do
+            if i ~= "CitizenQuest" and i ~= "BartiloQuest" and v1["LevelReq"] == Returner["LevelReq"] then
+                for i2, v2 in pairs(v1["Task"]) do
+                    Returner["Mob"] = i2
+                    Returner["QuestName"] = i
+                    Returner["QuestId"] = i1
+                end
+            end
+        end
+    end
+    Returner["QuestCFrame"] = QuestsCFrame[Returner["LevelReq"]] or (NPCLists:FindFirstChild(FakeGuideModule[Returner["QuestName"]]) and NPCLists[FakeGuideModule[Returner["QuestName"]]]:GetPivot())
+    return Returner
+end
 
 function GetNearMob(MobName)
     if not game.workspace.Enemies:FindFirstChild(MobName) then return false end
@@ -2123,45 +2184,51 @@ function CollectNearChest()
 end
 
 function FarmMobByLevel(level)
-    if not level then  
-        level = game.Players.LocalPlayer.Data.Level.Value 
-    end
-    if World1 and level >= 700 then  
-        level = 675 
-    elseif World2 and level >= 1500 then  
-        level = 1475
-    end
-
-    local CurrentQuestMob = CheckCurrentQuestMob()
-    if level <= game.Players.LocalPlayer.Data.Level.Value and not game.Players.LocalPlayer.PlayerGui.Main:FindFirstChild("Quest").Visible then
-        getgenv().CurrentFarmTaskDoing = 'Getting quest'
-        xpcall(function()
-            if (TableQuests[GetQuest(level).NameQuest].Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10 then
-                TP1(CFrame.new(TableQuests[GetQuest(level).NameQuest].Position))
-                return FarmMobByLevel(level)
-            else       
-                game.ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest", tostring(GetQuest(level).NameQuest), GetQuest(level).ID)
-            end
-        end, function(err)
-            warn("Error In Farm Level: ", err)
-        end)
-    elseif PlayerGui.Main:FindFirstChild("Quest").Visible and PlayerGui.Main.Quest.Container.QuestTitle.Title.Text:find(CurrentQuestMob, 1, true) then
-        if CheckMob(CurrentQuestMob) then
-            KillNigga(CheckMob(CurrentQuestMob, true))
-        else
-            getgenv().CurrentFarmTaskDoing = "Waiting For " .. tostring(CurrentQuestMob)
-            CFrame_Mob = CFrame_Mobs[CurrentQuestMob]
-            if type(CFrame_Mob) == "table" then
-                TP1(CFrame_Mob[math.random(1, #CFrame_Mob)])
+    level = level or Level.Value
+    local checkbossquest = CheckBossQuest()
+    local NewQuest = CheckQuestByLevel({
+        Level = level,
+        DoubleQuest = true
+    })
+    if checkbossquest["LevelReq"] > NewQuest["LevelReq"] and Bosses[checkbossquest["Mob"]] then
+        print(Bosses[checkbossquest["Mob"]])
+        if level <= Level.Value and (not game.Players.LocalPlayer.PlayerGui.Main:FindFirstChild("Quest").Visible or not string.find(game.Players.LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, checkbossquest["Mob"])) then
+            GetQuest(checkbossquest, true)
+        end
+        if level <= Level.Value and game.Players.LocalPlayer.PlayerGui.Main:FindFirstChild("Quest").Visible and game.Players.LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text:find(checkbossquest["Mob"], 1, true) then
+            KillNigga(Bosses[checkbossquest["Mob"]])
+        end
+    else
+        local CurrentQuestMob = CheckCurrentQuestMob()
+        if level <= Level.Value and (not CurrentQuestMob or CurrentQuestMob == checkbossquest["Mob"] or not game.Players.LocalPlayer.PlayerGui.Main:FindFirstChild("Quest").Visible or not game.Players.LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text:find(CurrentQuestMob, 1, true)) then
+            GetQuest(NewQuest)
+            wait(.5)
+        elseif game.Players.LocalPlayer.PlayerGui.Main:FindFirstChild("Quest").Visible and game.Players.LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text:find(CurrentQuestMob, 1, true) then
+            if CheckMob(CurrentQuestMob) then
+                KillNigga(CheckMob(CurrentQuestMob, true))
             else
-                TP1(CFrame_Mob)
+                getgenv().CurrentFarmTaskDoing = "Waiting For " .. tostring(CurrentQuestMob)
+                if #DetectPartSpawnMob(CurrentQuestMob) > 0 then
+                    local CFrameMob = DetectPartSpawnMob(CurrentQuestMob)
+                    for i,v in CFrameMob do
+                        TP1(v * CFrame.new(0,15,0))
+                        local count = tick()
+                        repeat wait() until tick() - count >= 0.5 or CheckMob(CurrentQuestMob)
+                        if CheckMob(CurrentQuestMob) then return end
+                    end
+                else
+                    CFrame_Mob = CFrame_Mobs[CurrentQuestMob]
+                    if type(CFrame_Mob) == "table" then
+                        TP1(CFrame_Mob[math.random(1, #CFrame_Mob)])
+                        wait(.25)
+                    else
+                        TP1(CFrame_Mob)
+                    end
+                end
             end
-            local count = tick()
-            repeat wait() until tick() - count >= 0.5 or CheckMob(CurrentQuestMob)
         end
     end
 end
-
 function KillMobList(MobList)
     if CheckMob(MobList, true) then
         KillNigga(CheckMob(MobList))
@@ -3361,7 +3428,7 @@ function tweenfruit()
         if string.find(v.Name, "Fruit") and v:FindFirstChild "Handle" then
             getgenv().CurrentFarmTaskDoing = 'Collecting '.. v.Name
             repeat wait()
-                Sex_Tween = TP1(v.Handle.CFrame)
+                Sex_Tween = NormalTween(v.Handle.CFrame)
             until not v.Parent or v.Parent ~= game.workspace
             Sex_Tween:Cancel()
             VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
@@ -4003,16 +4070,27 @@ function farmelite()
         if PlayerGui.Main.Quest.Visible then
             if not string.find(PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, _G.CurrentElite.Name) then
                 CommF:InvokeServer("AbandonQuest")
+                return farmelite()
+            end       
+        else
+            if GetDistance(CFrame.new(-5416, 314, -2823)) > 5 then
+                TP1(CFrame.new(-5416, 314, -2823))
+                wait()
+            end
+            if GetDistance(CFrame.new(-5416, 314, -2823)) <= 5 then
+                CommF:InvokeServer("EliteHunter")
             end
         end
-        repeat
-            wait()
-            SexTween = TP1(_G.CurrentElite.HumanoidRootPart.CFrame)
-        until not _G.CurrentElite or not skidymf(_G.CurrentElite) or GetDistance(_G.CurrentElite.HumanoidRootPart.CFrame) < 70
-        if SexTween then SexTween:Cancel() end
-        if _G.CurrentElite and skidymf(_G.CurrentElite) then
-            CommF:InvokeServer("EliteHunter")
-            KillNigga(_G.CurrentElite)
+        if PlayerGui.Main.Quest.Visible and string.find(PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, _G.CurrentElite.Name) then
+            repeat
+                wait()
+                SexTween = NormalTween(_G.CurrentElite.HumanoidRootPart.CFrame)
+            until not _G.CurrentElite or not skidymf(_G.CurrentElite) or GetDistance(_G.CurrentElite.HumanoidRootPart.CFrame) < 70
+            if SexTween then SexTween:Cancel() end
+            if _G.CurrentElite and skidymf(_G.CurrentElite) then
+                CommF:InvokeServer("EliteHunter")
+                KillNigga(_G.CurrentElite)
+            end
         end
     end
 end
@@ -4311,7 +4389,7 @@ function docdkquest()
                     wait()
                 until tonumber(workspace.Map.Turtle.Cursed.BossDoor.AssemblyCenterOfMass.Y) < 580
                 click()
-                TP1(CFrame.new(-12330.197265625, 603.31982421875, -6549.11865234375))
+                NormalTween(CFrame.new(-12330.197265625, 603.31982421875, -6549.11865234375))
                 wait(1)
             end
         end
