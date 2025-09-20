@@ -308,8 +308,6 @@ do
     end)
 end
 
-
-
 ReplicatedStorage                        = game:GetService("ReplicatedStorage")
 NPCLists                                 = ReplicatedStorage:WaitForChild('NPCs')
 Remotes                                  = ReplicatedStorage:WaitForChild("Remotes")
@@ -332,60 +330,61 @@ Beli                                     = PlrData:WaitForChild("Beli")
 LastSpawn                                = PlrData:WaitForChild('LastSpawnPoint')
 Race                                     = PlrData:WaitForChild('Race')
 LevelMax                                 = tonumber(require(game.ReplicatedStorage.Modules.Player.PlayerConfig).LEVEL_CAP) or 2750
+local buychip
 getgenv().MeleeTask = nil
 getgenv().CDKQuest = nil
 FakeGuideModule = {
-                    ["BuggyQuest1"] = "Pirate Adventurer",
-                    ["FountainQuest"] = "Freezeburg Quest Giver",
-                    ["ColosseumQuest"] = "Colosseum Quest Giver",
-                    ["SkyQuest"] = "Sky Adventurer",
-                    ["JungleQuest"] = "Adventurer",
-                    ["MagmaQuest"] = "The Mayor",
-                    ["PrisonerQuest"] = "Jail Keeper",
-                    ["SkyExp2Quest"] = "Sky Quest Giver 2",
-                    ["MarineQuest2"] = "Marine",
-                    ["BanditQuest1"] = "Bandit Quest Giver",
-                    ["FishmanQuest"] = "King Neptune",
-                    ["MarineQuest"] = "Marine Leader",
-                    ["SkyExp1Quest"] = "Mole",
-                    ["DesertQuest"] = "Desert Adventurer",
-                    ["ImpelQuest"] = "Head Jailer",
-                    ["SnowQuest"] = "Villager",
-                    ["IceSideQuest"] = "Ice Quest Giver",
-                    ["ZombieQuest"] = "Graveyard Quest Giver",
-                    ["Area2Quest"] = "Area 2 Quest Giver",
-                    ["Area1Quest"] = "Area 1 Quest Giver",
-                    ["MarineQuest3"] = "Marine Quest Giver",
-                    ["SnowMountainQuest"] = "Snow Quest Giver",
-                    ["ShipQuest1"] = "Rear Crew Quest Giver",
-                    ["FireSideQuest"] = "Fire Quest Giver",
-                    ["ShipQuest2"] = "Front Crew Quest Giver",
-                    ["ForgottenQuest"] = "Forgotten Quest Giver",
-                    ["FrostQuest"] = "Frost Quest Giver",
-                    ["IceCreamIslandQuest"] = "Ice Cream Quest Giver",
-                    ["VenomCrewQuest"] = "Hydra Town Quest Giver",
-                    ["ChocQuest1"] = "Chocolate Quest Giver 1",
-                    ["DeepForestIsland"] = "Deep Forest Quest Giver",
-                    ["DragonCrewQuest"] = "Dragon Crew Quest Giver",
-                    ["DeepForestIsland2"] = "Deep Forest Area 2 Quest Giver",
-                    ["NutsIslandQuest"] = "Peanut Quest Giver",
-                    ["HornedMan"] = "Horned Man",
-                    ["PiratePortQuest"] = "Pirate Port Quest Giver",
-                    ["CandyQuest1"] = "Candy Cane Quest Giver",
-                    ["MarineTreeIsland"] = "Marine Tree Quest Giver",
-                    ["HauntedQuest2"] = "Haunted Castle Quest Giver 2",
-                    ["TikiQuest2"] = "Tiki Quest Giver 2",
-                    ["TikiQuest1"] = "Tiki Quest Giver 1",
-                    ["DeepForestIsland3"] = "Turtle Adventure Quest Giver",
-                    ["CakeQuest2"] = "Cake Quest Giver 2",
-                    ["ArenaTrainer"] = "Arena Trainer",
-                    ["TikiQuest3"] = "Tiki Quest Giver 3",
-                    ["CakeQuest1"] = "Cake Quest Giver 1",
-                    ["ChocQuest2"] = "Chocolate Quest Giver 2",
-                    ["HauntedQuest1"] = "Haunted Castle Quest Giver 1",
-                    ["SubmergedQuest1"] = "Submerged Quest Giver 1",
-                    ["SubmergedQuest2"] = "Submerged Quest Giver 2"
-                }
+    ["BuggyQuest1"] = "Pirate Adventurer",
+    ["FountainQuest"] = "Freezeburg Quest Giver",
+    ["ColosseumQuest"] = "Colosseum Quest Giver",
+    ["SkyQuest"] = "Sky Adventurer",
+    ["JungleQuest"] = "Adventurer",
+    ["MagmaQuest"] = "The Mayor",
+    ["PrisonerQuest"] = "Jail Keeper",
+    ["SkyExp2Quest"] = "Sky Quest Giver 2",
+    ["MarineQuest2"] = "Marine",
+    ["BanditQuest1"] = "Bandit Quest Giver",
+    ["FishmanQuest"] = "King Neptune",
+    ["MarineQuest"] = "Marine Leader",
+    ["SkyExp1Quest"] = "Mole",
+    ["DesertQuest"] = "Desert Adventurer",
+    ["ImpelQuest"] = "Head Jailer",
+    ["SnowQuest"] = "Villager",
+    ["IceSideQuest"] = "Ice Quest Giver",
+    ["ZombieQuest"] = "Graveyard Quest Giver",
+    ["Area2Quest"] = "Area 2 Quest Giver",
+    ["Area1Quest"] = "Area 1 Quest Giver",
+    ["MarineQuest3"] = "Marine Quest Giver",
+    ["SnowMountainQuest"] = "Snow Quest Giver",
+    ["ShipQuest1"] = "Rear Crew Quest Giver",
+    ["FireSideQuest"] = "Fire Quest Giver",
+    ["ShipQuest2"] = "Front Crew Quest Giver",
+    ["ForgottenQuest"] = "Forgotten Quest Giver",
+    ["FrostQuest"] = "Frost Quest Giver",
+    ["IceCreamIslandQuest"] = "Ice Cream Quest Giver",
+    ["VenomCrewQuest"] = "Hydra Town Quest Giver",
+    ["ChocQuest1"] = "Chocolate Quest Giver 1",
+    ["DeepForestIsland"] = "Deep Forest Quest Giver",
+    ["DragonCrewQuest"] = "Dragon Crew Quest Giver",
+    ["DeepForestIsland2"] = "Deep Forest Area 2 Quest Giver",
+    ["NutsIslandQuest"] = "Peanut Quest Giver",
+    ["HornedMan"] = "Horned Man",
+    ["PiratePortQuest"] = "Pirate Port Quest Giver",
+    ["CandyQuest1"] = "Candy Cane Quest Giver",
+    ["MarineTreeIsland"] = "Marine Tree Quest Giver",
+    ["HauntedQuest2"] = "Haunted Castle Quest Giver 2",
+    ["TikiQuest2"] = "Tiki Quest Giver 2",
+    ["TikiQuest1"] = "Tiki Quest Giver 1",
+    ["DeepForestIsland3"] = "Turtle Adventure Quest Giver",
+    ["CakeQuest2"] = "Cake Quest Giver 2",
+    ["ArenaTrainer"] = "Arena Trainer",
+    ["TikiQuest3"] = "Tiki Quest Giver 3",
+    ["CakeQuest1"] = "Cake Quest Giver 1",
+    ["ChocQuest2"] = "Chocolate Quest Giver 2",
+    ["HauntedQuest1"] = "Haunted Castle Quest Giver 1",
+    ["SubmergedQuest1"] = "Submerged Quest Giver 1",
+    ["SubmergedQuest2"] = "Submerged Quest Giver 2"
+}
 ScreenGui                                = Instance.new("ScreenGui");
 
 check2 = false
@@ -403,7 +402,30 @@ workspace._WorldOrigin.PlayerSpawns[tostring(game:GetService("Players").LocalPla
             Request_Places2[aa.Name] = CFrame.new(aa.WorldPivot.Position)
         end
 end)
-
+if PlayerGui:FindFirstChild("SpinnerWindow") then
+    pcall(function()
+        if firesignal then
+            firesignal(PlayerGui.SpinnerWindow.CloseButton.Activated)
+        else
+            for i, v in pairs(getconnections(PlayerGui.SpinnerWindow.CloseButton.Activated )) do
+                v.Function()
+            end
+        end
+    end)
+end
+PlayerGui.ChildAdded:Connect(function(k)
+    if k.Name == "SpinnerWindow" then
+        pcall(function()
+            if firesignal then
+                firesignal(k.CloseButton.Activated)
+            else
+                for i, v in pairs(getconnections(k.CloseButton.Activated)) do
+                    v.Function()
+                end
+            end
+        end)
+    end
+end)
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "3TLHubUI"
 ScreenGui.ResetOnSpawn = false
@@ -825,34 +847,24 @@ local function CanStoreFruit(fruit)
     end
     return false
 end
-function StoreFruit()
-    for a, b in pairs(LocalPlayer.Backpack:GetChildren()) do
-        if string.match(b.Name, "Fruit$") then
-            local name = b.Name:match("(%S+)")
-            local fruit = name .. "-" .. name
-            if CanStoreFruit(fruit) then
-                CommF:InvokeServer("StoreFruit", fruit,
-                    game:GetService("Players").LocalPlayer.Character:FindFirstChild(b.Name) or
-                    game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(b.Name))
-                return
-            end
-        end
-    end
-    for a, b in pairs(Character:GetChildren()) do
-        if string.match(b.Name, "Fruit$") then
-            local name = b.Name:match("(%S+)")
-            local fruit = name .. "-" .. name
-            if CanStoreFruit(fruit) then
-                CommF:InvokeServer("StoreFruit", fruit,
-                    game:GetService("Players").LocalPlayer.Character:FindFirstChild(b.Name) or
-                    game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(b.Name))
-                wait(1)
-                return
-            end
-        end
-    end
+function StoreFruit(a)
+    if getgenv().CurrentFarmTask == "Auto Third Sea" or buychip then return end
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer(
+            "StoreFruit",
+            tostring(a:GetAttribute("OriginalName")),
+            a
+        )
 end
-
+LocalPlayer.Backpack.ChildAdded:Connect(function(v)
+    if string.match(v.Name, "Fruit$") then
+        StoreFruit(v)
+    end
+end)
+Character.ChildAdded:Connect(function(v)
+    if string.match(v.Name, "Fruit$") then
+        StoreFruit(v)
+    end
+end)
 function PriorityQueue:pop(element)
     for i, task in ipairs(self.queue) do
         if task.element == element then
@@ -1000,8 +1012,6 @@ function NormalTween(Pos)
     local tween
     if World3 then
         if GetDistance(CFrame.new(10439, -1962, 9697)) <= 5000 then
-            print(Pos)
-            print(GetDistance(CFrame.new(10439, -1962, 9697)))
             if GetDistance(CFrame.new(11427.9189, -2156.36401, 9726.24023)) > 8 then
                 TP1(CFrame.new(11427.9189, -2156.36401, 9726.24023))
             end
@@ -1135,19 +1145,12 @@ function TP1(Pos, notinstant)
             tween:Play()
             lastPauseTime = tick()
         end
-
-        if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Sit then
-            repeat
-                wait()
-                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
-            until not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Sit
-            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
-        end
         if World3 then
-            if GetDistance(Pos, CFrame.new(10439, -1962, 9697)) <= 10000 then
+            if GetDistance(Pos, CFrame.new(10439, -1962, 9697)) <= 5000 then
                 if not workspace.Map:FindFirstChild('Submerged Island') then
                     if not workspace.NPCs:FindFirstChild('Submarine Worker') then
                         TP1(CFrame.new(-16270, 25, 1374))
+                        return TP1(Pos, notinstant)
                     end
                     if workspace.NPCs:FindFirstChild('Submarine Worker') then
                         repeat
@@ -1156,16 +1159,17 @@ function TP1(Pos, notinstant)
                         until workspace.Map:FindFirstChild('Submerged Island')
                     end
                 end
-            elseif GetDistance(CFrame.new(10439, -1962, 9697)) <= 10000 then
+            elseif GetDistance(CFrame.new(10439, -1962, 9697)) <= 5000 then
                 if GetDistance(CFrame.new(11427.9189, -2156.36401, 9726.24023)) > 8 then
                     TP1(CFrame.new(11427.9189, -2156.36401, 9726.24023))
+                    return TP1(Pos, notinstant)
                 end
                 if GetDistance(CFrame.new(11427.9189, -2156.36401, 9726.24023)) <= 8 then
                     repeat
                         Modules.Net["RF/SubmarineTransportation"]:InvokeServer("InitiateTeleport","Tiki Outpost")
                         wait(1)
-                    until GetDistance(CFrame.new(10439, -1962, 9697)) > 10000
-                    return
+                    until GetDistance(CFrame.new(10439, -1962, 9697)) > 5000
+                    return TP1(Pos, notinstant)
                 end
             end
         end
@@ -1197,7 +1201,8 @@ function TP1(Pos, notinstant)
         end
         if Distance <= 200 then
             if Distance <= 50 then
-                Time = 0
+                Character:MoveTo(Pos.Position)
+                return
             else
                 Time = 0.25
             end
@@ -1233,7 +1238,7 @@ function HopServer(bO)
                     if not Settings2[k] then
                         SaveSettings2(game.JobId)
                         ReplicatedStorage.__ServerBrowser:InvokeServer("teleport", k)
-                        wait(10)
+                        wait(5)
                     elseif tick() - Settings2[k] > 600 then
                         Settings2[k] = nil
                     end
@@ -1531,15 +1536,15 @@ function DetectPartMobBring(name, a, b, c,b1)
     end
     if b then
         if b1 then
-            local Remoted, dist = nil, -math.huge
+            local Farest, dist = nil, -math.huge
             for i, v in next, Mob do
                 local conconcac = (a.HumanoidRootPart.Position - v.Position).Magnitude
                 if dist < conconcac and GetDistance(a.HumanoidRootPart,v) <= 300 then
                     dist = conconcac
-                    Remoted = v
+                    Farest = v
                 end
             end
-            return Remoted
+            return Farest
         else
             local Closest, dist = nil, math.huge
             for i, v in next, Mob do
@@ -1569,14 +1574,12 @@ local function Bring(Realmob, Enemy, BringCFrame)
     local RootPart = Enemy:FindFirstChild("HumanoidRootPart")
     local Humanoid = Enemy:FindFirstChild("Humanoid")
     local oldHealth = Humanoid.Health
-    local brought = false
     local count = tick()
     repeat
         --sizepart(Enemy)
         if not skidymf(Enemy) or not skidymf(Realmob) then return end
         if GetDistance(BringCFrame, RootPart.CFrame) <= 300 then
-            if GetDistance(BringCFrame, RootPart.CFrame) > 5 or brought then
-                brought = true
+            if GetDistance(BringCFrame, RootPart.CFrame) > 5 then
                 RootPart.CFrame = BringCFrame
             end
         else
@@ -1587,7 +1590,6 @@ local function Bring(Realmob, Enemy, BringCFrame)
     if skidymf(Enemy) then
         if Humanoid.Health == oldHealth then
             RootPart.CFrame = CFrame.new(Enemy.WorldPivot.Position)
-            print(1)
             Enemy:AddTag('ignore')
         end
         Enemy:RemoveTag('Brought')
@@ -1999,7 +2001,6 @@ function GetQuest(QuestTables, Boss)
         end
         return
     end
-    table.foreach(QuestTables, print)
     if GetDistance(QuestTables["QuestCFrame"] * CFrame.new(0, 0, -2)) > 8 then
         TP1(QuestTables["QuestCFrame"])
         return GetQuest(QuestTables, Boss)
@@ -2480,7 +2481,6 @@ function get1mfruit()
     return false
 end
 
-local unstore
 function AutoThirdSea()
     if not CommF:InvokeServer("GetUnlockables").FlamingoAccess then
         if not get1mfruit() then
@@ -2490,7 +2490,6 @@ function AutoThirdSea()
             else--]]
                 return AutoL()
         end
-        unstore = true
         getgenv().CurrentFarmTaskDoing = "Give Fruit 1m"
         TP1(CFrame.new(-336.312, 331.986, 646.689))
 
@@ -2521,7 +2520,6 @@ function AutoThirdSea()
         CommF:InvokeServer("TalkTrevor", "3")
         return
     end
-    if unstore then unstore = false end
     if not CommF:InvokeServer("ZQuestProgress", "Check") then
         if not Bosses["Don Swan"] then
             getgenv().CurrentFarmTaskDoing = "Hop Find Don Swan"
@@ -2957,14 +2955,34 @@ function AutoMeleeMasteryCheck()
 end
 
 AutoMeleeMasteryCheck()
-function checkNotify(msg)
-    for r, k in pairs(PlayerGui.Notifications:GetChildren()) do
-        if k and k:IsA("TextLabel") and k.Text and string.find(string.lower(k.Text), msg) then
-            return true
+for r, k in pairs(PlayerGui.Notifications:GetChildren()) do
+    if k and k:IsA("TextLabel") and k.Text then
+        local text = string.lower(k.Text)
+        if string.find(text, "spotted") then
+            getgenv().PirateRaidTick = true
+        elseif string.find(text, "good job") then
+            getgenv().PirateRaidTick = false
+        elseif string.find(text, "rare item") then
+            CommF:InvokeServer("BuyDragonTalon", true)
+        elseif string.find(text, "loading...") then
+            getgenv().DimensionLoading = true
         end
     end
 end
-
+PlayerGui.Notifications.ChildAdded:Connect(function(k)
+    if k and k:IsA("TextLabel") and k.Text then
+        local text = string.lower(k.Text)
+        if string.find(text, "spotted") then
+            getgenv().PirateRaidTick = true
+        elseif string.find(text, "good job") then
+            getgenv().PirateRaidTick = false
+        elseif string.find(text, "rare item") then
+            CommF:InvokeServer("BuyDragonTalon", true)
+        elseif string.find(text, "loading...") then
+            getgenv().DimensionLoading = true
+        end
+    end
+end)
 function checkfireessence()
     if string.find(CommF:InvokeServer("BuyDragonTalon", true), "Set") then
         return false
@@ -2972,20 +2990,6 @@ function checkfireessence()
         return true
     end
 end
-
-spawn(function()
-    while wait(.5) do
-        if checkNotify('spotted') then
-            getgenv().PirateRaidTick = true
-        elseif checkNotify('good job') then
-            getgenv().PirateRaidTick = false
-        elseif checkNotify('rare item') then
-            CommF:InvokeServer("BuyDragonTalon", true)
-        elseif checkNotify('loading...') then
-            getgenv().DimensionLoading = true
-        end
-    end
-end)
 AutoHallowScythe = function()
     if CheckBackPack("Hallow Essence") then
         EquipWeapon('Hallow Essence')
@@ -3334,12 +3338,12 @@ local function handleWorld2()
         EquipWeapon('Library Key')
         TP1(CFrame.new(6375.9126, 296.634583, -6843.14062, -0.849467814, 1.5493983e-08, -0.527640462, 3.70608895e-08, 1,
             -3.0301031e-08, 0.527640462, -4.5294577e-08, -0.849467814))
-    elseif CheckBackPack('Water Key') and not WaterkeyPassed then
+    elseif CheckBackPack('Water Key') and not WaterkeyPassed and not check2xexp() then
         if Bosses['Tide Keeper'] then
             getgenv().CurrentFarmTask = "Get Water Key"
             KillNigga(Bosses['Tide Keeper'])
         end
-    elseif not CommF:InvokeServer("OpenLibrary") and Bosses['Awakened Ice Admiral'] then
+    elseif not CommF:InvokeServer("OpenLibrary") and Bosses['Awakened Ice Admiral'] and not check2xexp() then
         getgenv().CurrentFarmTask = "Get Library Key"
         KillNigga(Bosses['Awakened Ice Admiral'])
     else
@@ -3642,32 +3646,46 @@ function checkneedawk()
     return needawk
 end
 
+local function mmb(v)  
+    local OC = tostring(v):split('-')
+    if #OC >= 3 then 
+        local OC2 = {} 
+        for i,v in pairs(OC) do 
+            table.insert(OC2,v)
+            if #OC2 >= #OC/2 then break end 
+        end
+        return tostring(unpack(OC2))
+    else
+        print(OC[1])
+        return tostring(OC[1])
+    end
+end
+
 local awkfruit = false
-spawn(function()
-    pcall(function()
-        while wait(.5) do
-            if BFSettings["Awakening Fruit"] and tostring(game.Players.LocalPlayer.Data.DevilFruit.Value) ~= "" then
-                result = {}
-                local regex = ("([^%s]+)"):format("-")
-                local xp = tostring(game.Players.LocalPlayer.Data.DevilFruit.Value)
-                for each in xp:gmatch(regex) do
-                    table.insert(result, each)
-                end
-                if table.find(Raidslist, tostring(result[1])) and MLLV["Godhuman"] > 0 and checkSkullGuitar()
-                then
-                    if checkneedawk() then
-                        if tostring(result[1]) ~= "Dough" and tostring(result[1]) ~= "Phoenix" then
-                            awkfruit = true
-                        elseif tostring(result[1]) == "Dough" or tostring(result[1]) == "Phoenix" then
-                            if tostring(result[1]) == "Phoenix" then
-                                awkfruit = false
-                            elseif tostring(result[1]) == "Dough" and CommF:InvokeServer("CakeScientist", "Check") then
+if BFSettings["Awakening Fruit"] then
+    spawn(function()
+        pcall(function()
+            while wait(.5) do
+                if tostring(game.Players.LocalPlayer.Data.DevilFruit.Value) ~= "" then
+                    local selraid = mmb(tostring(game.Players.LocalPlayer.Data.DevilFruit.Value))
+                    if table.find(Raidslist, selraid) and MLLV["Godhuman"] > 0 and checkSkullGuitar()
+                    then
+                        if checkneedawk() then
+                            if tostring(selraid) ~= "Dough" and tostring(selraid) ~= "Phoenix" then
                                 awkfruit = true
-                            else
-                                if tonumber(CommF:InvokeServer("RaidsNpc", "Select", "Ice")) ~= 1 then
-                                    return
+                            elseif tostring(selraid) == "Dough" or tostring(selraid) == "Phoenix" then
+                                if tostring(selraiad) == "Phoenix" then
+                                    awkfruit = false
+                                elseif tostring(selraid) == "Dough" and CommF:InvokeServer("CakeScientist", "Check") then
+                                    awkfruit = true
+                                else
+                                    if tonumber(CommF:InvokeServer("RaidsNpc", "Select", "Ice")) ~= 1 then
+                                        return
+                                    end
                                 end
                             end
+                        else
+                            awkfruit = false
                         end
                     else
                         awkfruit = false
@@ -3675,26 +3693,19 @@ spawn(function()
                 else
                     awkfruit = false
                 end
-            else
-                awkfruit = false
             end
-        end
+        end)
     end)
-end)
+end
 function buychip()
     local fruit = GetLowestValueFruit()
     if fruit then
-        unstore = true
+        buychip = true
         CommF:InvokeServer("LoadFruit", fruit)
     end
-    result = {}
-    local regex = ("([^%s]+)"):format("-")
-    local xp = tostring(game.Players.LocalPlayer.Data.DevilFruit.Value)
-    for each in xp:gmatch(regex) do
-        table.insert(result, each)
-    end
+    local selraid = mmb(tostring(game.Players.LocalPlayer.Data.DevilFruit.Value))
     if awkfruit then
-        if tonumber(CommF:InvokeServer("RaidsNpc", "Select", tostring(result[1]))) ~= 1 then
+        if tonumber(CommF:InvokeServer("RaidsNpc", "Select", selraid)) ~= 1 then
             return
         end
     else
@@ -3702,7 +3713,7 @@ function buychip()
             return
         end
     end
-    unstore = false
+    buychip = false
 end
 
 local haveDarkFragment
@@ -3892,20 +3903,6 @@ autostats()
 PlrData.Points:GetPropertyChangedSignal('Value'):Connect(autostats)
 spawn(function()
     while wait() do
-        if not unstore then
-            StoreFruit()
-        end
-        if PlayerGui:FindFirstChild("SpinnerWindow") then
-            pcall(function()
-                if firesignal then
-                    firesignal(PlayerGui.SpinnerWindow.CloseButton.Activated)
-                else
-                    for i, v in pairs(getconnections(PlayerGui.SpinnerWindow.CloseButton.Activated )) do
-                        v.Function()
-                    end
-                end
-            end)
-        end
         getMeleeMastery()
         if not WaterkeyPassed then WaterkeyPassed = typeof(CommF:InvokeServer("BuySharkmanKarate", true)) ~= 'string' end
         if not PreviousHeroRemoteFired then PreviousHeroRemoteFired = CommF:InvokeServer("BuyElectricClaw", true) end
@@ -4150,9 +4147,9 @@ function farmelite()
         else
             if GetDistance(CFrame.new(-5416, 314, -2823)) > 5 then
                 TP1(CFrame.new(-5416, 314, -2823))
-                wait()
             end
             if GetDistance(CFrame.new(-5416, 314, -2823)) <= 5 then
+                wait(1)
                 CommF:InvokeServer("EliteHunter")
             end
         end
@@ -4464,15 +4461,15 @@ function docdkquest()
                     wait()
                 until tonumber(workspace.Map.Turtle.Cursed.BossDoor.AssemblyCenterOfMass.Y) < 580
                 click()
-                NormalTween(CFrame.new(-12330.197265625, 603.31982421875, -6549.11865234375))
-                wait(1)
+                repeat
+                    NormalTween(CFrame.new(-12262, 599, -6550))
+                    wait()
+                until Bosses["Cursed Skeleton Boss"]
             end
         end
-        if Bosses["Cursed Skeleton Boss"] and GetDistance(Bosses["Cursed Skeleton Boss"].HumanoidRootPart) <= 50 then
-            repeat
-                wait()
-                TP1(Bosses["Cursed Skeleton Boss"].HumanoidRootPart.CFrame)
-            until checkinv("Cursed Dual Katana")
+        if Bosses["Cursed Skeleton Boss"] then
+            getgenv().WeaponType  = 'Sword'
+            KillNigga(Bosses["Cursed Skeleton Boss"])
         end
     end
 end
@@ -5171,7 +5168,7 @@ spawn(function()
             elseif getgenv().SkullGuitarQuest and getgenv().SkullGuitarQuest ~= "" and getgenv().SkullGuitarQuest ~= nil then
                 getgenv().CurrentFarmTask = getgenv().SkullGuitarQuest
                 dosgquest()
-            elseif (getgenv().CDKQuest == "" or getgenv().CDKQuest == nil) and (game.Players.LocalPlayer:GetAttribute("IslandRaiding") == true or game.Players.LocalPlayer.Backpack:FindFirstChild("Special Microchip") or game.Players.LocalPlayer.Character:FindFirstChild("Special Microchip")) then
+            elseif (getgenv().CDKQuest == "" or getgenv().CDKQuest == nil) and (game.Players.LocalPlayer:GetAttribute("IslandRaiding") == true or CheckBackPack('Special Microchip')) then
                 getgenv().CurrentFarmTask = "Doing Raid"
                 AutoRaid()
             elseif not queue:empty() then
