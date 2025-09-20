@@ -235,6 +235,7 @@ if LocalPlayer.Team == nil then
         wait(1)
     until LocalPlayer.Team ~= nil
 end
+repeat wait() until LocalPlayer.DataLoaded
 function q1(I, II)
     if not II then
         II = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
@@ -1998,8 +1999,8 @@ function GetQuest(QuestTables, Boss)
         end
         return
     end
-    print('CFrame Quest: '.. tostring(QuestTables["QuestCFrame"]))
-    if GetDistance(QuestTables["QuestCFrame"] * CFrame.new(0, 0, -2)) > 5 then
+    table.foreach(QuestTables, print)
+    if GetDistance(QuestTables["QuestCFrame"] * CFrame.new(0, 0, -2)) > 8 then
         TP1(QuestTables["QuestCFrame"])
         return GetQuest(QuestTables, Boss)
     else
@@ -2046,15 +2047,17 @@ function CheckQuestByLevel(cq)
             CheckCurrentQuestMob() == Returner["Mob"]
         then
             for i, v in pairs(Quests) do
-                for _, v1 in pairs(v) do
-                    if v1.Task[Returner["Mob"]] then
-                        for id, Data in next, v do
-                            for nm, count in next, Data.Task do
-                                if tostring(nm) ~= CheckCurrentQuestMob() and count > 1 then
-                                    if Data.LevelReq <= lvlPl then
-                                        Returner["Mob"]       = tostring(nm)
-                                        Returner["QuestName"] = i
-                                        Returner["QuestId"]   = id
+                if not table.find(UselessQuest, tostring(i)) then
+                    for _, v1 in pairs(v) do
+                        if v1.Task[Returner["Mob"]] then
+                            for id, Data in next, v do
+                                for nm, count in next, Data.Task do
+                                    if tostring(nm) ~= CheckCurrentQuestMob() and count > 1 then
+                                        if Data.LevelReq <= lvlPl then
+                                            Returner["Mob"]       = tostring(nm)
+                                            Returner["QuestName"] = i
+                                            Returner["QuestId"]   = id
+                                        end
                                     end
                                 end
                             end
@@ -3499,8 +3502,10 @@ function tweenfruit()
             getgenv().CurrentFarmTaskDoing = 'Collecting '.. v.Name
             repeat wait()
                 Sex_Tween = NormalTween(v.Handle.CFrame)
-            until not v or not v.Parent or v.Parent ~= game.workspace
-            Sex_Tween:Cancel()
+            until not v or not v.Parent or v.Parent ~= game.workspace or #ServerData.ServerFruit <= 0 or GetDistance(v.Handle) <= 10
+            if not v or not v.Parent or v.Parent ~= game.workspace or #ServerData.ServerFruit <= 0 then
+                Sex_Tween:Cancel()
+            end
             VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
             wait(0.1)
             VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
