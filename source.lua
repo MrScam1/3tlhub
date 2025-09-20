@@ -415,7 +415,7 @@ local function fireClose(gui)
 end
 
 local function handleSpinnerWindow(gui)
-    if not gui:IsA("GuiObject") then return end
+    if not gui:IsA("ScreenGui") then return end
 
     gui:GetPropertyChangedSignal("Enabled"):Connect(function()
         if gui.Enabled then
