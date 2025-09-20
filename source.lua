@@ -402,27 +402,43 @@ workspace._WorldOrigin.PlayerSpawns[tostring(game:GetService("Players").LocalPla
             Request_Places2[aa.Name] = CFrame.new(aa.WorldPivot.Position)
         end
 end)
-if PlayerGui:FindFirstChild("SpinnerWindow") then
-    pcall(function()
+local function fireClose(gui)
+    if gui:FindFirstChild("CloseButton") then
         if firesignal then
-            firesignal(PlayerGui.SpinnerWindow.CloseButton.Activated)
+            firesignal(gui.CloseButton.Activated)
         else
-            for i, v in pairs(getconnections(PlayerGui.SpinnerWindow.CloseButton.Activated )) do
+            for _, v in pairs(getconnections(gui.CloseButton.Activated)) do
                 v.Function()
             end
         end
+    end
+end
+
+local function handleSpinnerWindow(gui)
+    if not gui:IsA("GuiObject") then return end
+
+    gui:GetPropertyChangedSignal("Enabled"):Connect(function()
+        if gui.Enabled then
+            fireClose(gui)
+        end
+    end)
+
+    if gui.Enabled then
+        fireClose(gui)
+    end
+end
+
+local spinner = PlayerGui:FindFirstChild("SpinnerWindow")
+if spinner then
+    pcall(function()
+        handleSpinnerWindow(spinner)
     end)
 end
-PlayerGui.ChildAdded:Connect(function(k)
-    if k.Name == "SpinnerWindow" then
+
+PlayerGui.ChildAdded:Connect(function(child)
+    if child.Name == "SpinnerWindow" then
         pcall(function()
-            if firesignal then
-                firesignal(k.CloseButton.Activated)
-            else
-                for i, v in pairs(getconnections(k.CloseButton.Activated)) do
-                    v.Function()
-                end
-            end
+            handleSpinnerWindow(child)
         end)
     end
 end)
