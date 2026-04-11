@@ -1,0 +1,2557 @@
+getgenv().Setting = {}
+getgenv().AffinityToFind = {
+    [1] = { --DFT1
+        DEFENSE = 1.9,
+        SNIPER = 1.9,
+        MELEE = 1.9,
+        SWORD = 1.9
+    },
+    [2] = { --DFT2
+        DEFENSE = 1.9,
+        SNIPER = 1.9,
+        MELEE = 1.9,
+        SWORD = 1.9
+    }
+}
+repeat
+    wait();
+until game:IsLoaded() and game.Players and (game.Workspace:FindFirstChild('Trees') and game.Workspace.Trees:FindFirstChild('Tree') and game.Workspace.Trees.Tree:FindFirstChild('Model')) and (game.Workspace:FindFirstChild('Island14') and game.Workspace.Island14:FindFirstChild('PedestalSpots'));
+
+if not game:GetService("Players").LocalPlayer.PlayerGui.Announcement.Frame.Visible then
+    game:GetService("Players").LocalPlayer.PlayerGui.Announcement.Frame.Visible = true
+    wait(1)
+    game:GetService("Players").LocalPlayer.PlayerGui.Announcement.Frame.TextLabel.Text = "Script Made By Mr.Scam"
+else
+    if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Announcement.Frame.TextLabel.Text, "Script") then
+        game:GetService("Players").LocalPlayer.PlayerGui.Announcement.Frame.TextLabel.Text = "Script Made By Mr.Scam"
+    end
+end
+function noti2(Text, Duration)
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "God Hub",
+        Text = Text,
+        Icon = "",
+        Duration = Duration
+    })
+end
+function isspawned(player)
+    if not player then player = game.Players.LocalPlayer end
+    return (player ~= LocalPlayer and GetDistance(player.Character.HumanoidRootPart, game:GetService("Workspace").CustomizeModel.SpawnAreaStuffK.HBase) >= 10000) or (player:FindFirstChild("Backpack") and player.Backpack:FindFirstChildOfClass('Tool'))
+end
+function IsPlayerAlive(player, IsSpawned)
+    if not player then
+        player = game.Players.LocalPlayer
+    end
+    if not player or not player:IsA("Player") then
+        return false
+    end
+    local character = player.Character or player:FindFirstChild('Character')
+    if not player.Character or player:FindFirstChild('Character') then
+        return false
+    end
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then
+        return false
+    end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid or (humanoid.Health <= 0 and player.Character == game.Players.LocalPlayer.Character) then
+        return false
+    end
+    if not isspawned(player) and (player.Name == LocalPlayer.Name or IsSpawned) then return false end
+    return true
+end
+player              = game:GetService("Players")
+LocalPlayer         = player.LocalPlayer
+Character           = LocalPlayer.Character
+Powers              = Character.Powers
+HealthPlr           = Character.CharacterTrait.Health
+MaxHealthPlr        = Character.CharacterTrait.HealthMax
+UserData            = game.workspace.UserData:FindFirstChild("User_"..tostring(game.Players.LocalPlayer.UserId))
+HakiLevel           = UserData.Data:FindFirstChild('HakiLevel')
+UsingHaki           = UserData.UsingHaki
+HakiBar             = UserData.HakiBar
+ListAllDevilFurits  = {"Vampire Fruit" ,"Quake Fruit" ,"Phoenix Fruit" ,"Dark Fruit", "Alice Fruit" ,"Ope Fruit" ,"Venom Fruit" ,"Candy Fruit" ,"Hollow Fruit" ,"Chilly Fruit" ,"Gas Fruit" ,"Flare Fruit" ,"Light Fruit" ,"Smoke Fruit" ,"Sand Fruit" ,"Rumble Fruit" ,"Magma Fruit" ,"Snow Fruit" ,"Gravity Fruit", "Plasma Fruit"}
+BlacklistedPlayers = {
+    "Oblivic",
+    "BowTiedPony",
+    "Bige0n",
+    "Farquanetta",
+    "icydragonwingsis",
+    "trashpanda2361",
+    "MarcusVetarus",
+    "ElianJoestar",
+    "Quixotize",
+    "CudlesstheCat",
+    "FoxKingFab",
+    "Tiptop98",
+    "vlonedd",
+    "VortexFragmented",
+    "Natsudragn331",
+    "VanitasThePlague",
+    "happypandamagic",
+}
+repeat
+	wait()
+until UserData:FindFirstChild("FinishedLoading")
+repeat
+	wait()
+until UserData:FindFirstChild("FinishedLoading").Value == true
+local StopHaki = false
+local OldPositionOfSpawn = {}
+for i,v in pairs(game.Workspace.Spawns:GetChildren()) do
+    OldPositionOfSpawn[i] = v.CFrame
+end
+function plrvariable()
+    repeat wait() until LocalPlayer.Character ~= nil and IsPlayerAlive()
+    Character                 = LocalPlayer.Character
+    Powers              = Character.Powers
+    HealthPlr           = Character.CharacterTrait.Health
+    MaxHealthPlr        = Character.CharacterTrait.HealthMax
+end
+LocalPlayer.CharacterAdded:Connect(plrvariable)
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Window = Fluent:CreateWindow({
+    Title = "God Hub",
+    SubTitle = "Mr.Scam",
+    TabWidth = 120,
+    Size = UDim2.fromOffset(400, 320),
+    Acrylic = true,                        -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.RightControl -- Used when theres no MinimizeKeybind
+})
+local Options = Fluent.Options
+function noti(Title, Content, SubContent, Duration)
+    Content = string.upper(Content)
+    SubContent = string.upper(SubContent)
+    Fluent:Notify({
+        Title = Title,
+        Content = Content or game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,
+        SubContent = SubContent or "", -- Optional
+        Duration = Duration or 15      -- Set to nil to make the notification not disappear
+    })
+end
+
+noti("God Hub", "Thanks for using hub", "loading script", 10)
+local Tabs = {
+    Main  = Window:AddTab({ Title = "Main Farm", Icon = "" }),
+    AFarm = Window:AddTab({ Title = "Another Farm", Icon = "" }),
+    PvP   = Window:AddTab({ Title = "PvP", Icon = "" }),
+    MissonsAndGodMode = Window:AddTab({ Title = "Missons And God Rights", Icon = "" }),
+    Fruit = Window:AddTab({ Title = "Fruit", Icon = "" }),
+    Sam   = Window:AddTab({ Title = "Sam", Icon = "" }),
+    Lucy  = Window:AddTab({ Title = "Affinity", Icon = "" }),
+    Misc  = Window:AddTab({ Title = "Misc", Icon = "" }),
+}
+local ScreenGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+
+-- Set ScreenGui Parent to PlayerGui
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+
+-- Configure ImageButton Properties
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.067, 0, 0.393, 0) -- Adjusted for clarity
+ImageButton.Size = UDim2.new(0, 40, 0, 40)
+
+-- Thêm TextLabel để hiển thị tên button
+local TextLabel = Instance.new("TextLabel")
+TextLabel.Parent = ImageButton
+TextLabel.Size = UDim2.new(1, 0, 1, 0)         -- Chiếm toàn bộ kích thước button
+TextLabel.Text = "Open/Hide UI"
+TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- Màu chữ đen
+TextLabel.BackgroundTransparency = 1           -- Trong suốt nền
+TextLabel.TextScaled = true                    -- Tự động điều chỉnh kích thước chữ
+
+
+-- On ImageButton click, simulate pressing the "F6" key
+ImageButton.MouseButton1Down:Connect(function()
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, "RightControl", false, game)
+end)
+
+-- Add drag functionality to the ImageButton
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local dragToggle, dragStart, startPos
+
+-- Function to update ImageButton position
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale,
+        startPos.Y.Offset + delta.Y)
+    TweenService:Create(ImageButton, TweenInfo.new(0), { Position = position }):Play()
+end
+
+-- Input began handler for dragging
+ImageButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        startPos = ImageButton.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragToggle = false
+            end
+        end)
+    end
+end)
+
+-- Input changed handler for updating ImageButton position during drag
+UIS.InputChanged:Connect(function(input)
+    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragToggle then
+        updateInput(input)
+    end
+end)
+if not game:GetService("Workspace").ISLAND:FindFirstChild("Base1") then
+    local Base1 = Instance.new("Part", game:GetService("Workspace").ISLAND)
+    Base1.Name = "Base1"
+    Base1.Size = Vector3.new(60, 3, 65)
+    Base1.Position = Vector3.new(100000, 3500, 80000)
+    Base1.Anchored = true
+end
+if not game:GetService("Workspace").ISLAND:FindFirstChild("Base2") then
+    local Base2 = Instance.new("Part", game:GetService("Workspace").ISLAND)
+    Base2.Name = "Base2"
+    Base2.Size = Vector3.new(50, 1, 50)
+    Base2.Position = Vector3.new(188679, 210, 176128)
+    Base2.Transparency = 1
+    Base2.Anchored = true
+end
+game:GetService("Players").LocalPlayer.PlayerGui.Menu.Frame.C.Frame.Nametag.Text =
+"GOD HUB ON THE TOP \nhttps://discord.gg/EAh4SKWCsX"
+function PostWebhook(cm, cn)
+    local co = http_request or request or HttpPost or syn.request
+    local cp = co({
+        Url = cm,
+        Method = "POST",
+        Headers = { ["Content-Type"] = "application/json" },
+        Body = game:GetService("HttpService"):JSONEncode(cn)
+    })
+end
+
+function PostWebhook2(data)
+    return PostWebhook(
+        "https://discord.com/api/webhooks/1186522778380275782/FFfOEIXHc0aBsBh3gMWoVFdb4cc-BVcOIKrcYBQU2UzH16-QTRzCgT7HIY8WrZ12bV-J",
+        data)
+end
+
+local plr = game.Players.LocalPlayer
+local remotes = {}
+local azc
+azc = hookmetamethod(game, "__namecall", function(self, ...)
+    local args = { ... }
+    local method = getnamecallmethod()
+    if method == "FireServer" or method == "InvokeServer" then
+        if self.Name == "RemoteEvent" and args[3] == "StopCharging" then
+            remotes[self.Name] = args[1]
+            return azc(self, unpack(args))
+        end
+    end
+    return azc(self, ...)
+end)
+local attackremote = {}
+
+local a
+a = hookmetamethod(game, "__namecall", function(self, ...)
+    local args = { ... }
+    local method = getnamecallmethod()
+    if method == "FireServer" or method == "InvokeServer" then
+        if self.Name == "RequestAnimation" and game.Players.LocalPlayer.Character.Humanoid.Health ~= 0 then
+            attackremote[self.Name] = args[1]
+            return a(self, unpack(args))
+        elseif self.Name == "RequestAnimation" and game.Players.LocalPlayer.Character.Humanoid.Health == 0 then
+            attackremote[self.Name] = ""
+        end
+    end
+    return a(self, ...)
+end)
+function serializeTable(val, name, skipnewlines, depth)
+    skipnewlines = skipnewlines or false
+    depth = depth or 0
+
+    local tmp = string.rep("", depth)
+
+    if name then tmp = tmp end
+
+    if type(val) == "table" then
+        tmp = tmp .. (not skipnewlines and "" or "")
+
+        for k, v in pairs(val) do
+            tmp = tmp .. serializeTable(v, k, skipnewlines, depth + 1) .. (not skipnewlines and "" or "")
+        end
+
+        tmp = tmp .. string.rep("", depth)
+    elseif type(val) == "number" then
+        tmp = tmp .. tostring(val)
+    elseif type(val) == "string" then
+        tmp = tmp .. string.format("%q", val)
+    elseif type(val) == "boolean" then
+        tmp = tmp .. (val and "true" or "false")
+    elseif type(val) == "function" then
+        tmp = tmp .. "func: " .. debug.getinfo(val).name
+    else
+        tmp = tmp .. tostring(val)
+    end
+
+    return tmp
+end
+function NormalTween(Pos)
+    tween = game:GetService("TweenService"):Create(
+        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new(0, Enum.EasingStyle.Linear),
+        { CFrame = Pos }
+    )
+    tween:Play()
+end
+function checkcountcannonball()
+    local count = 0
+    for i,v in pairs(LocalPlayer.Backpack:GetChildren()) do
+        if v.Name == "Cannon Ball" then
+            count += 1
+        end
+    end
+    return count
+end
+function AddVelocity()
+    if not game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("God Hub") then
+        local body = Instance.new("BodyVelocity")
+        body.Name = "God Hub"
+        body.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+        body.MaxForce = Vector3.new(1000000000, 1000000000, 1000000000)
+        body.Velocity = Vector3.new(0, 0, 0)
+    end
+end
+
+function RemoveVelocity()
+    if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("God Hub") then
+        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("God Hub"):Destroy()
+    end
+end
+
+function checkdistance(a, b)
+    return (a.Position - b.Position).Magnitude
+end
+function GetDistance(target1, taget2)
+    if not taget2 then
+        taget2 = game.Players.LocalPlayer.Character.HumanoidRootPart
+    end
+    local a = target1.Position
+    local a2 = taget2.Position
+    return (a - a2).Magnitude
+end
+
+--- ANTI AFK
+local GC = getconnections or get_signal_cons
+if GC then
+    for i, v in pairs(GC(game.Players.LocalPlayer.Idled)) do
+        if v["Disable"] then
+            v["Disable"](v)
+        elseif v["Disconnect"] then
+            v["Disconnect"](v)
+        end
+    end
+end
+spawn(function()
+    while wait() do
+        wait(200)
+        local VirtualUser = game:GetService('VirtualUser')
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+        game:GetService("VirtualInputManager"):SendMouseButtonEvent(1, 1, 0, true, nil, 0)
+        game:GetService("VirtualInputManager"):SendMouseButtonEvent(1, 1, 0, false, nil, 0)
+    end
+end)
+local a
+a = hookmetamethod(game, "__namecall", function(self, ...)
+    local args = { ... }
+    local method = getnamecallmethod()
+    if method == "FireServer" or method == "InvokeServer" then
+        if self.Name == "RemoteEvent" and args[3] == "StopCharging" and getgenv().Setting["autoskillvip"] and not Setting.vampgod then
+            args[6] = 100
+            return a(self, unpack(args))
+        end
+    end
+    return a(self, ...)
+end)
+local Players = game:GetService("Players")
+local BlacklistedPlayers = {
+    "Oblivic",
+    "BowTiedPony",
+    "Bige0n",
+    "Farquanetta",
+    "icydragonwingsis",
+    "trashpanda2361",
+    "MarcusVetarus",
+    "ElianJoestar",
+    "Quixotize",
+    "CudlesstheCat",
+    "FoxKingFab",
+    "Tiptop98",
+    "vlonedd",
+    "VortexFragmented",
+    "Natsudragn331",
+    "VanitasThePlague",
+    "happypandamagic",
+}
+for i, v in pairs(Players:GetPlayers()) do
+    if table.find(BlacklistedPlayers, v.Name) then
+        Players.LocalPlayer:Kick(v.Name)
+    end
+end
+GC = getconnections
+for i, v in pairs(GC(game.Players.LocalPlayer.Idled)) do
+    v:Disable()
+end
+Players.PlayerAdded:Connect(function(v)
+    if table.find(BlacklistedPlayers, v.Name) then
+        Players.LocalPlayer:Kick(v.name)
+    end
+end)
+local i = "God Hub"
+local j = "-OPL.json"
+local l = game.Players.LocalPlayer.Name .. j
+function SaveSettings(m, n)
+    if m ~= nil then
+        getgenv().Setting[m] = n
+    end
+    if not isfolder(i) then
+        makefolder(i)
+    end
+    writefile(i .. "/" .. l, game:GetService("HttpService"):JSONEncode(getgenv().Setting))
+end
+
+function ReadSetting()
+    local s, o =
+        pcall(
+            function()
+                HttpService = game:GetService("HttpService")
+                if not isfolder(i) then
+                    makefolder(i)
+                end
+                return isfile(i .. "/" .. l) and HttpService:JSONDecode(readfile(i .. "/" .. l))
+            end
+        )
+    if s and o then
+        return o
+    else
+        SaveSettings()
+        return ReadSetting()
+    end
+end
+
+getgenv().Setting = ReadSetting();
+function EquipWeapon(Tool)
+    pcall(function()
+        if game.Players.LocalPlayer.Backpack:FindFirstChild(Tool) then
+            local ToolHumanoid = game.Players.LocalPlayer.Backpack:FindFirstChild(Tool)
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(ToolHumanoid)
+        end
+    end)
+end
+function jumpoutthechair()
+    if LocalPlayer.Character:FindFirstChild("Humanoid").Sit then
+        repeat
+            wait()
+            game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.Space, false, game)
+        until not LocalPlayer.Character:FindFirstChild("Humanoid").Sit
+        game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.Space, false, game)
+    end
+end
+function ATTACK()
+    game:GetService 'VirtualUser':CaptureController()
+    game:GetService 'VirtualUser':Button1Down(Vector2.new(1280, 672))
+    sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+end
+Tabs.MissonsAndGodMode:AddSection("Missions")
+Tabs.MissonsAndGodMode:AddToggle("Toggle", {
+    Title = "Auto Get Misson",
+    Default = getgenv().Setting["getmission"] or false,
+    Callback = function(Value)
+        SaveSettings("getmission", Value)
+    end
+})
+Tabs.MissonsAndGodMode:AddToggle("Toggle", {
+    Title = "Ignore Kill Players Quest",
+    Default = getgenv().Setting["ignoreplrquest"] or false,
+    Callback = function(Value)
+        SaveSettings("ignoreplrquest", Value)
+    end
+})
+Tabs.MissonsAndGodMode:AddToggle("Toggle", {
+    Title = "Auto Do Misson",
+    Default = getgenv().Setting["domission"] or false,
+    Callback = function(Value)
+        SaveSettings("domission", Value)
+    end
+})
+Tabs.MissonsAndGodMode:AddSection("God Mode")
+Tabs.MissonsAndGodMode:AddToggle("Toggle", {
+    Title = "Bomb Method",
+    Default = getgenv().Setting["bombgod"] or false,
+    Callback = function(Value)
+        SaveSettings("bombgod", Value)
+    end
+})
+Tabs.MissonsAndGodMode:AddToggle("Toggle", {
+    Title = "Vampire Method",
+    Default = getgenv().Setting["vampgod"] or false,
+    Callback = function(Value)
+        SaveSettings("vampgod", Value)
+    end
+})
+Tabs.Main:AddToggle("safezone", {
+    Title = "Safe Zone",
+    Default = getgenv().Setting["safezone"] or false,
+    Callback = function(Value)
+        SaveSettings("safezone", Value)
+    end
+})
+function checksafezone()
+    for i, v in pairs(game:GetService("Workspace").ISLAND:GetChildren()) do
+        if v.Name == "Base1" then
+            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude > 50 then
+                return true
+            end
+        end
+    end
+    return false
+end
+function spamflare(targetHumanoidRootPart)
+    local c = getsenv(Powers:FindFirstChild("Flare")).VTCmgwcm
+    Powers:FindFirstChild("Flare").RemoteEvent:FireServer(c, "FlarePower2", "StartCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, nil, "Right")
+    Powers:FindFirstChild("Flare").RemoteEvent:FireServer(c, "FlarePower2", "StopCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, 100)
+end
+function spammagma(targetHumanoidRootPart)
+    local c = getsenv(Powers:FindFirstChild("Magma")).VTCmel
+    Powers.Magma.RemoteEvent:FireServer(c, "MagmaPower7", "StartCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, nil, "Right")
+    Powers.Magma.RemoteEvent:FireServer(c, "MagmaPower7", "StopCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, 100)
+end
+
+function spamquake(targetHumanoidRootPart)
+    local c = getsenv(Powers:FindFirstChild("Quake")).VTCebvc
+    Powers:FindFirstChild("Quake").RemoteEvent:FireServer(c, "QuakePower4", "StartCharging", nil, "Right")
+    Powers:FindFirstChild("Quake").RemoteEvent:FireServer(c, "QuakePower4", "StopCharging", targetHumanoidRootPart, targetHumanoidRootPart.CFrame, 100, targetHumanoidRootPart.Position, nil)
+end
+
+function spambomb(targetHumanoidRootPart, Charge)
+    if not Charge then Charge = 100 end
+    local c = getsenv(Powers.Bomb).VTCcpkghc
+    Powers.Bomb.RemoteEvent:FireServer(c, "BombPower5", "StartCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, nil, "Right")
+    wait()
+    Powers.Bomb.RemoteEvent:FireServer(c, "BombPower5", "StopCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, Charge)
+end
+function spamVampire(targetHumanoidRootPart, Charge)
+    local c = getsenv(Powers.Vampire).VTCjwf
+    if not Charge then Charge = 100 end
+    Powers:WaitForChild("Vampire"):WaitForChild("RemoteEvent"):FireServer(c, "VampirePower5", "StartCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, nil, nil, nil, 'Right')
+    wait()
+    Powers:WaitForChild("Vampire"):WaitForChild("RemoteEvent"):FireServer(c, "VampirePower5", "StopCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, Charge)
+end
+function spamgas(targetHumanoidRootPart)
+    local c = getsenv(Powers.Gas).VTCtb
+    Powers.Gas.RemoteEvent:FireServer(c, "GasPower4", "StartCharging", targetHumanoidRootPart.CFrame, game.Players.LocalPlayer.Character.HumanoidRootPart, nil, "Right")
+    wait()
+    Powers.Gas.RemoteEvent:FireServer(c, "GasPower4", "StopCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, 100)
+end
+function spamlight(targetHumanoidRootPart)
+    local c = getsenv(Powers.Light).VTCrv
+    Powers.Light.RemoteEvent:FireServer(c, "LightPower2", "StartCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, nil, nil, nil, "Right")
+    wait()
+    Powers.Light.RemoteEvent:FireServer(c, "LightPower2", "StopCharging", targetHumanoidRootPart.CFrame, targetHumanoidRootPart, 100)
+end
+
+function spamstring(targetHumanoidRootPart)
+    local c = getsenv(Powers.String).VTCjwbvx
+    Powers.String.RemoteEvent:FireServer(c, "StringPower2", "Start", targetHumanoidRootPart.CFrame, targetHumanoidRootPart)
+end
+listspam = {
+    Bomb = spambomb,
+    Quake = spammagma,
+    Light = spamlight,
+    Gas = spamgas,
+    Magma = spammagma,
+    Vampire = spamVampire,
+    Flare = spamflare
+}
+function checkmob(v)
+    if v and v.Parent and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild('Humanoid')  and v.Humanoid.Health > 0  then
+        return true
+    else
+        return false
+    end
+end
+Tabs.Main:AddSection("Stats")
+
+Tabs.Main:AddToggle("autostas", {
+    Title = "Auto Farm Stats",
+    Default = getgenv().Setting["autostas"] or false,
+    Callback = function(Value)
+        SaveSettings("autostas", Value)
+        getgenv().drinkcheck = false
+    end
+})
+Tabs.Main:AddSection("Haki")
+local MinHakiPercentage = math.ceil(HakiLevel.Value * 0.5)
+HakiLevel:GetPropertyChangedSignal('Value'):Connect(function()
+    MinHakiPercentage = math.ceil(HakiLevel.Value * 0.5)
+end)
+Tabs.Main:AddSlider("stackhaki", {
+    Title = "Haki Stack",
+    Description = "",
+    Default = type(getgenv().Setting["stackhaki"]) == "number" and getgenv().Setting["stackhaki"] or 10,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Callback = function(Value)
+        SaveSettings("stackhaki", Value)
+    end
+})
+Tabs.Main:AddToggle("farmhaki", {
+    Title = "Auto Farm Haki",
+    Default = getgenv().Setting["farmhaki"] or false,
+    Callback = function(Value)
+        SaveSettings("farmhaki", Value)
+    end
+})
+Tabs.Main:AddToggle("rjregen", {
+    Title = "Rejoin If Cannot Regen Haki",
+    Default = getgenv().Setting["rjregen"] or false,
+    Callback = function(Value)
+        SaveSettings("rjregen", Value)
+    end
+})
+Tabs.AFarm:AddSection("Cannon Farm")
+local cannonbeli = Tabs.AFarm:AddToggle("cannonfarm", {
+    Title = "Cannon Farm Beli",
+    Default = getgenv().Setting["cannonfarm"] or false,
+    Callback = function(Value)
+        SaveSettings("cannonfarm", Value)
+        _G.cannonfarm = Value
+    end
+})
+local duped = false
+spawn(function()
+    pcall(function()
+        while task.wait(0) do
+            pcall(function()
+                if IsPlayerAlive() and (getgenv().Setting["cannonfarm"] or getgenv().Setting["cannonfarmallplr"] or getgenv().Setting["cannonzombie"] or getgenv().Setting["plrcannon"]) then
+                    repeat wait()
+                        local cannon = CheckBackPack('Cannon Ball')
+                        if cannon then
+                            if cannon.Parent == LocalPlayer.Backpack then cannon.Parent = LocalPlayer.Character end
+                            if cannon.Parent == LocalPlayer.Character then
+                                if not game.Players.LocalPlayer.PlayerGui.HealthBar.Frame.Status:FindFirstChild("BusoHaki") then
+                                    game.workspace.UserData["User_" .. game.Players.LocalPlayer.UserId].UpdateHaki:FireServer()
+                                end
+                                wait(1.75)
+                                cannon:Activate()
+                                wait(.25)
+                                if game.Players.LocalPlayer.PlayerGui.HealthBar.Frame.Status:FindFirstChild("BusoHaki") then
+                                    game.workspace.UserData["User_" .. game.Players.LocalPlayer.UserId].UpdateHaki:FireServer()
+                                end
+                            end
+                        elseif IsPlayerAlive() then
+                            local count = tick()
+                            repeat wait() until CheckBackPack('Cannon Ball') or tick() - count >= 10
+                            if not CheckBackPack('Cannon Ball') then
+                                for i, v in pairs(LocalPlayer.Backpack:GetChildren()) do
+                                    if v.Name ~= "Compass" and not string.find(v.Name, "Fruit") and not string.find(v.Name, "Box") then
+                                        v:Destroy()
+                                    end
+                                end
+                                game:GetService("Players").LocalPlayer.Character.Weapons:FireServer()
+                                repeat wait(1) until CheckBackPack('Cannon Ball')
+                            end
+                        end
+                    until (not Setting.cannonfarm and not Setting.cannonfarmallplr and not Setting.cannonzombie and not Setting.plrcannon) or not IsPlayerAlive()
+                end
+            end)
+        end
+    end)
+end)
+
+spawn(function()
+    while task.wait(0) do
+        pcall(function()
+            if getgenv().Setting["cannonfarmallplr"] or getgenv().Setting["cannonfarm"] or getgenv().Setting["cannonzombie"] then
+                for i, v1 in pairs(game.workspace.ResourceHolder["Resources_" .. game.Players.LocalPlayer.UserId]:GetChildren()) do
+                    if v1.Name == "CannonBall" then
+                        v1.CanCollide = false
+                        v1.CFrame = game:GetService("Workspace").ISLAND.Base1.CFrame * CFrame.new(0, 100, -30)
+                    end
+                end
+            end
+        end)
+    end
+end)
+ task.spawn(function() -- autofarm cannon
+    while wait() do
+        pcall(function()
+            if Setting.cannonfarm then
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if checkmob(v) then
+                        v.HumanoidRootPart.CanCollide = false
+                        v.HumanoidRootPart.Size = Vector3.new(30, 30, 30)
+                        v:FindFirstChild("HumanoidRootPart").Anchored = true
+                        v:FindFirstChild("HumanoidRootPart").CFrame = game:GetService("Workspace").ISLAND.Base1.CFrame * CFrame.new(0, 100, -30)
+                    end
+                end
+            end
+        end)
+    end
+end)
+local cannonallplr = Tabs.AFarm:AddToggle("cannonfarmallplr", {
+    Title = "Cannon Farm All Players",
+    Default = getgenv().Setting["cannonfarmallplr"] or false,
+    Callback = function(Value)
+        SaveSettings("cannonfarmallplr", Value)
+    end
+})
+task.spawn(function()
+    while wait() do
+        if Setting.cannonfarmallplr then
+            for i, v in pairs(Players:GetPlayers()) do
+                if v.Name ~= LocalPlayer.Name and IsPlayerAlive(v) then
+                    v.Character.HumanoidRootPart.CanCollide = false
+                    v.Character.HumanoidRootPart.Size = Vector3.new(30, 30, 30)
+                    v.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").ISLAND.Base1.CFrame * CFrame.new(0, 100, -30)
+                end
+            end
+        end
+    end
+end)
+--[[Tabs.AFarm:AddToggle("cannonzombie", {
+    Title = "Cannon Farm Zombie",
+    Default = getgenv().Setting["cannonzombie"] or false,
+    Callback = function(Value)
+        SaveSettings("cannonzombie", Value)
+        _G.cannonzombie = Value
+    end
+})
+spawn(function()
+    while wait() do
+        if getgenv().Setting["cannonzombie"] and _G.cannonzombie then
+            if #workspace.WorldEvent.Halloween.Zombies:GetChildren() == 0 then
+                fireclickdetector(workspace.WorldEvent.Halloween:FindFirstChild("Pumpkin").ClickDetector)
+            else
+                for _, v in pairs(game.workspace.WorldEvent.Halloween.Zombies:GetChildren()) do
+                    if v:IsA("Model") and v.Name == "Zombie" and v:FindFirstChild("Humanoid") then
+                        local humanoid = v.Humanoid
+                        if humanoid.Health > 0 then
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(30, 30, 30)
+                            v.HumanoidRootPart.Anchored = true
+                            v.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame *
+                                CFrame.new(0, 2000, -30)
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)]] --
+Tabs.Main:AddSection("For Weapon Spamming")
+
+Tabs.Main:AddDropdown("selectweapon", {
+    Title = "Select Weapon to Spam",
+    Values = { "Yoru", "Seastone Cestus" },
+    Multi = false,
+    Default = getgenv().Setting["SelectWeapon"] or "",
+    Callback = function(Value)
+        SaveSettings("SelectWeapon", Value)
+    end
+})
+Tabs.Main:AddSlider("stackhit", {
+    Title = "Hit Stack",
+    Description = "",
+    Default = getgenv().Setting["stackhit"] or 1,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Callback = function(Value)
+        SaveSettings("stackhit", Value)
+    end
+})
+Tabs.Main:AddToggle("spamwp", {
+    Title = "Spamming Weapon",
+    Default = getgenv().Setting["spamwp"] or false,
+    Callback = function(Value)
+        SaveSettings("spamwp", Value)
+    end
+})
+Tabs.Misc:AddToggle("antispam", {
+    Title = "Anti Spam",
+    Default = getgenv().Setting["antispam"] or false,
+    Callback = function(Value)
+        SaveSettings("antispam", Value)
+    end
+})
+Tabs.Misc:AddToggle("antispam", {
+    Title = "Anti String Void",
+    Default = getgenv().Setting["antistring"] or false,
+    Callback = function(Value)
+        SaveSettings("antistring", Value)
+        _G.antistring = Value
+    end
+})
+Tabs.Misc:AddToggle("autoskillvip", {
+    Title = "100% Skill",
+    Default = getgenv().Setting["autoskillvip"] or false,
+    Callback = function(Value)
+        SaveSettings("autoskillvip", Value)
+    end
+})
+Tabs.Misc:AddToggle("autospawn", {
+    Title = "Auto Spawn",
+    Default = getgenv().Setting["autospawn"] or false,
+    Callback = function(Value)
+        SaveSettings("autospawn", Value)
+    end
+})
+task.spawn(function()
+    while wait() do
+        if Setting.autospawn then
+            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("Load") and game.Players.LocalPlayer.PlayerGui.Load.Frame.Visible then
+                for i,v in pairs(getconnections(game.Players.LocalPlayer.PlayerGui.Load.Frame.Load.MouseButton1Click)) do
+                    v.Function()
+                end
+            end
+        end
+    end
+end)
+Tabs.Misc:AddInput("inputskill", {
+    Title = "Input Skill to Send Key",
+    Default = getgenv().Setting["inputskill"] or "",
+    Placeholder = "Placeholder",
+    Numeric = false,  -- Only allows numbers
+    Finished = false, -- Only calls callback when you press enter
+    Callback = function(Value)
+        SaveSettings("inputskill", string.upper(Value))
+    end
+})
+Tabs.Misc:AddSlider("cdsendkey", {
+    Title = "Cooldown to Send Key",
+    Description = "second",
+    Default = getgenv().Setting["cdsendkey"] or 1,
+    Min = 0,
+    Max = 10,
+    Rounding = 1,
+    Callback = function(Value)
+        SaveSettings("cdsendkey", Value)
+    end
+})
+Tabs.Misc:AddToggle("autosk", {
+    Title = "Auto Send Key",
+    Default = getgenv().Setting["autosk"] or false,
+    Callback = function(Value)
+        SaveSettings("autosk", Value)
+        if Value then
+            autosktask = task.spawn(function()
+                while Setting.autosk do wait()
+                    if getgenv().Setting["autosk"] and getgenv().Setting["inputskill"] ~= "" then
+                        wait(getgenv().Setting["cdsendkey"])
+                        game:GetService("VirtualInputManager"):SendKeyEvent(true, getgenv().Setting["inputskill"], false,
+                            game)
+                        game:GetService("VirtualInputManager"):SendKeyEvent(false, getgenv().Setting["inputskill"], false,
+                            game)
+                    end
+                end
+            end)
+        elseif autosktask then
+            task.cancel(autosktask)
+            autosktask = nil
+        end
+    end
+})
+Tabs.AFarm:AddSection("Spam Skill to Farm")
+Tabs.AFarm:AddDropdown("selectfruit", {
+    Title = "Select Fruit",
+    Values = { "Vampire", "Flare", "Quake", "Magma" },
+    Multi = false,
+    Default = getgenv().Setting["selectfruit"] or "",
+    Callback = function(Value)
+        SaveSettings("selectfruit", Value)
+    end
+})
+Tabs.AFarm:AddToggle("spamskill", {
+    Title = "Start Farm ",
+    Default = getgenv().Setting["spamskill"] or false,
+    Callback = function(Value)
+        SaveSettings("spamskill", Value)
+        local mobtarget = nil
+    end
+})
+task.spawn(function()
+    --pcall(function()
+        while wait() do
+            if Setting.spamskill and Setting.selectfruit ~= "" then
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if checkmob(v) then
+                        mobtarget = v
+                        local target = v:FindFirstChild('HumanoidRootPart') or v:FindFirstChild('Head')
+                        if getgenv().Setting["selectfruit"] == "Quake" then
+                            repeat wait(0.2)
+                                if getgenv().Setting["selectfruit"] ~= "Quake" or not Setting.spamskill or not checkmob(v) then break end
+                                spamquake(target)
+                            until getgenv().Setting["selectfruit"] ~= "Quake" or not Setting.spamskill or not checkmob(v) or not IsPlayerAlive()
+                        else
+                            repeat
+                                if getgenv().Setting["selectfruit"] == "Quake" or not Setting.spamskill or not checkmob(v) or not IsPlayerAlive() then break end
+                                listspam[getgenv().Setting["selectfruit"]](target)
+                                wait(0.2)
+                            until getgenv().Setting["selectfruit"] == "Quake" or not Setting.spamskill or not checkmob(v) or not IsPlayerAlive()
+                        end
+                        mobtarget = nil
+                    end
+                end
+            end
+        end
+    --end)
+end)
+task.spawn(function()
+    while wait() do
+        if Setting.spamskill and Setting.selectfruit ~= "" and Powers[Setting["selectfruit"]]:FindFirstChild("Shots") and mobtarget then
+            for i1,v1 in pairs(Powers[Setting["selectfruit"]].Shots:GetChildren()) do
+                if v1:FindFirstChildOfClass('BodyPosition') then v1:FindFirstChildOfClass('BodyPosition'):Destroy() end
+                if v1:FindFirstChildOfClass('RocketPropulsion') then v1:FindFirstChildOfClass('RocketPropulsion'):Destroy() end
+                v1.Size = Vector3.new(500,500,500)
+                v1.CFrame = mobtarget.HumanoidRootPart.CFrame
+            end
+        end
+    end
+end)
+Tabs.AFarm:AddSection("Farming by Alt Account")
+local pos = Tabs.AFarm:AddInput("position", {
+    Title = "Position",
+    Default = getgenv().Setting["position"] or "",
+    Placeholder = "Postion",
+    Numeric = false,  -- Only allows numbers
+    Finished = false, -- Only calls callback when you press enter
+    Callback = function(Value)
+        print(1)
+        SaveSettings("position", Value)
+    end
+})
+Tabs.AFarm:AddButton({
+    Title = "Set Position",
+    Description = "",
+    Callback = function()
+        local Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position;
+        local Content = string.format("%s, %s, %s", math.floor(tonumber(Position.X)), math.floor(tonumber(Position.Y)),
+            math.floor(tonumber(Position.Z)));
+        pos:SetValue(Content)
+    end
+})
+Tabs.AFarm:AddToggle("tppos", {
+    Title = "Set Spawn at Postion ",
+    Default = getgenv().Setting["tppos"] or false,
+    Callback = function(Value)
+        SaveSettings("tppos", Value)
+        if not Value then
+            for i, Value in pairs(game.Workspace.Spawns:GetChildren()) do
+                Value.CFrame = OldPositionOfSpawn[i]
+            end
+        end
+    end
+})
+spawn(function()
+    while true do
+        wait()
+        if getgenv().Setting["tppos"] then
+            if getgenv().Setting["position"] then
+                local Position = string.split(getgenv().Setting["position"], ",")
+                if #Position ~= 3 then
+                    return noti("God Hub", "Error", "Format Error", 10)
+                end
+
+                for _, Value in pairs(game.Workspace.Spawns:GetChildren()) do
+                    Value.CFrame = CFrame.new(Position[1], Position[2], Position[3])
+                end
+                repeat wait() until not getgenv().Setting["tppos"] or #Position ~= 3
+            end
+        end
+    end
+end)
+Tabs.AFarm:AddToggle("autodie", {
+    Title = "Auto Die ",
+    Default = getgenv().Setting["autodie"] or false,
+    Callback = function(Value)
+        SaveSettings("autodie", Value)
+    end
+})
+local cut = 0
+spawn(function()
+    pcall(function()
+        while wait() do
+            if getgenv().Setting["autodie"] then
+                if IsPlayerAlive() then
+                    repeat
+                        wait(1)
+                        cut = cut + 1
+                        if cut >= 3 then
+                            game.Players.LocalPlayer.Character:FindFirstChild("Humanoid"):ChangeState(15)
+                            break
+                        end
+                    until not IsPlayerAlive()
+                    cut = 0
+                end
+            end
+        end
+    end)
+end)
+Tabs.AFarm:AddSection("Lightning Sword")
+local dopackage = Tabs.AFarm:AddToggle("autopackage", {
+    Title = "Auto Package ",
+    Default = getgenv().Setting["autopackage"] or false,
+    Callback = function(Value)
+        SaveSettings("autopackage", Value)
+    end
+})
+
+Tabs.AFarm:AddSection("Fishing")
+Tabs.AFarm:AddDropdown("chooserod", {
+    Title = "Choose Rod",
+    Values = { "Wood Rod", "Sturdy Rod", "Super Rod" },
+    Multi = false,
+    Default = getgenv().Setting["chooserod"] or "",
+    Callback = function(Value)
+        SaveSettings("chooserod", Value)
+    end
+})
+local fishing = Tabs.AFarm:AddToggle("autofishing", {
+    Title = "Auto Fishing ",
+    Default = getgenv().Setting["autofishing"] or false,
+    Callback = function(Value)
+        SaveSettings("autofishing", Value)
+    end
+})
+local chooseplr = Tabs.PvP:AddDropdown("chooseplr", {
+    Title = "Select Player",
+    Values = { "" },
+    Multi = false,
+    Default = getgenv().Setting["chooseplr"] or "",
+    Callback = function(Value)
+        SaveSettings("chooseplr", Value)
+    end
+})
+Tabs.PvP:AddButton({
+    Title = "Refresh Players",
+    Description = "",
+    Callback = function()
+        local players = {};
+        for i, v in pairs(game.Players:GetChildren()) do
+            if not table.find(players, v.Name) and v.name ~= game.Players.LocalPlayer.Name then
+                table.insert(players, v.Name);
+            end;
+        end;
+        chooseplr:SetValues(players)
+    end
+})
+local methodtp = Tabs.PvP:AddDropdown("choosetp", {
+    Title = "Select Method TP",
+    Values = { "Normal", "Above" },
+    Multi = false,
+    Default = getgenv().Setting["choosetp"] or "",
+    Callback = function(Value)
+        SaveSettings("choosetp", Value)
+    end
+})
+Tabs.PvP:AddToggle("viewplr", {
+    Title = "Spectate Player",
+    Default = getgenv().Setting["viewplr"] or false,
+    Callback = function(Value)
+        SaveSettings("viewplr", Value)
+    end
+})
+local function viewDiedFunc()
+    repeat wait() until viewing.Character ~= nil and IsPlayerAlive(viewing)
+    workspace.CurrentCamera.CameraSubject = viewing.Character
+end
+local function viewChangedFunc()
+    workspace.CurrentCamera.CameraSubject = viewing.Character
+end
+task.spawn(function()
+    while wait() do
+        if Setting.viewplr and Setting.chooseplr ~= "" and game.Players:FindFirstChild(Setting.chooseplr) and IsPlayerAlive(game.Players:FindFirstChild(Setting.chooseplr)) then
+            workspace.CurrentCamera.CameraSubject = game.Players[Setting.chooseplr].Character
+            local oldplr = Setting.chooseplr
+            viewing = game.Players:FindFirstChild(Setting.chooseplr)
+            viewDied = game.Players:FindFirstChild(Setting.chooseplr).CharacterAdded:Connect(viewDiedFunc)
+            viewChanged = workspace.CurrentCamera:GetPropertyChangedSignal("CameraSubject"):Connect(viewChangedFunc)
+            repeat wait()
+            until not game.Players:FindFirstChild(Setting.chooseplr) or Setting.chooseplr == "" or not Setting.viewplr or Setting.chooseplr ~= oldplr
+            if viewing ~= nil then
+                viewing = nil
+            end
+            if viewDied then
+                viewDied:Disconnect()
+                viewChanged:Disconnect()
+            end
+            workspace.CurrentCamera.CameraSubject = LocalPlayer.Character
+        end
+    end
+end)
+player.PlayerRemoving:Connect(function(player)
+	if viewing ~= nil and player == viewing then
+		workspace.CurrentCamera.CameraSubject = Players.LocalPlayer.Character
+		viewing = nil
+		if viewDied then
+			viewDied:Disconnect()
+			viewChanged:Disconnect()
+		end
+	end
+end)
+Tabs.PvP:AddButton({
+    Title = "Fix Camera",
+    Description = "",
+    Callback = function()
+        game.Workspace.Camera.CameraSubject = game.Players.LocalPlayer.Character
+    end
+})
+local tpplr = Tabs.PvP:AddToggle("tpplr", {
+    Title = "Teleport Player",
+    Default = getgenv().Setting["tpplr"] or false,
+    Callback = function(Value)
+        SaveSettings("tpplr", Value)
+    end
+})
+if getgenv().Setting["chooseplr"] == nil then
+    getgenv().Setting["chooseplr"] = ""
+end
+spawn(function()
+    pcall(function()
+        while wait() do
+            pcall(function()
+                if getgenv().Setting["tpplr"] and getgenv().Setting["chooseplr"] ~= "" and getgenv().Setting["choosetp"] ~= "" then
+                    if game.Players:FindFirstChild(getgenv().Setting["chooseplr"]) and game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character then
+                        if game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild("Humanoid") and game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild("HumanoidRootPart") and game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild("Humanoid").Health > 0 then
+                            AddVelocity()
+                            wait()
+                            local distanceFromSpawn = (game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild("HumanoidRootPart").Position - game:GetService("Workspace").CustomizeModel.SpawnAreaStuffK.HBase.Position)
+                                .Magnitude
+
+                            if distanceFromSpawn > 10000 then
+                                if getgenv().Setting["choosetp"] == "Normal" then
+                                    repeat
+                                        wait()
+                                        NormalTween(game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character
+                                            :FindFirstChild("HumanoidRootPart").CFrame)
+                                    until not getgenv().Setting["tpplr"] or getgenv().Setting["choosetp"] ~= "Normal" or not IsPlayerAlive(ame.Players:FindFirstChild(getgenv().Setting["chooseplr"])) or distanceFromSpawn <= 10000
+                                    RemoveVelocity()
+                                elseif getgenv().Setting["choosetp"] == "Above" and checkdistance(game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild("HumanoidRootPart"), game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")) > 10 then
+                                    repeat
+                                        wait()
+                                        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame =
+                                            game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character
+                                            :FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0, 10, 0)
+                                    until not getgenv().Setting["tpplr"] or getgenv().Setting["choosetp"] ~= "Above" or game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild("Humanoid").Health <= 0 or distanceFromSpawn <= 10000
+                                    RemoveVelocity()
+                                end
+                            else
+                                for _, v in pairs(game:GetService("Workspace").ISLAND:GetChildren()) do
+                                    if v.Name == "Base1" then
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame *
+                                            CFrame.new(0, 10, 0)
+                                    end
+                                end
+                            end
+                        else
+                            for _, v in pairs(game:GetService("Workspace").ISLAND:GetChildren()) do
+                                if v.Name == "Base1" then
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame *
+                                        CFrame.new(0, 10, 0)
+                                end
+                            end
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                        end
+                    end
+                end
+            end)
+        end
+    end)
+end)
+Tabs.PvP:AddSection("Camp Players by Spamming Skill Method")
+Tabs.PvP:AddDropdown("selectfruit2", {
+    Title = "Select Fruit",
+    Values = { "String", "Quake", "Light", "Bomb", "Magma", "Gas", "Vampire", "Flare"},
+    Multi = false,
+    Default = getgenv().Setting["selectfruit2"] or "",
+    Callback = function(Value)
+        SaveSettings("selectfruit2", Value)
+    end
+})
+Tabs.PvP:AddToggle("startkill", {
+    Title = "Start Kill\nSelected Player ",
+    Default = getgenv().Setting["startkill"] or false,
+    Callback = function(Value)
+        SaveSettings("startkill", Value)
+    end
+})
+spawn(function()
+    pcall(function()
+        while true do
+            wait()
+                if getgenv().Setting["startkill"] and IsPlayerAlive() and getgenv().Setting["selectfruit2"] ~= "" and getgenv().Setting["chooseplr"] ~= "" then
+                    local plr2 = game.Players:FindFirstChild(getgenv().Setting["chooseplr"])
+                    if plr2 and IsPlayerAlive(plr2) then
+                        print(Setting.selectfruit2)
+                        if getgenv().Setting["selectfruit2"] == "String" then
+                            if Character:FindFirstChild("Humanoid") and not Character.Humanoid.Sit then
+                                repeat
+                                    wait()
+                                    Character.HumanoidRootPart.CFrame = CFrame.new(1976.38, 216.149979, 607.585022,
+                                        0.707134247, -0,
+                                        -0.707079291, 0, 1, -0, 0.707079291, 0, 0.707134247)
+                                until Character.Humanoid.Sit == true
+                            end
+                            local startTime = os.clock()
+                            repeat
+                                wait(0.5)
+                                plr2 = game.Players:FindFirstChild(getgenv().Setting["chooseplr"])
+                                if not plr2 or not IsPlayerAlive(plr2) then break end
+                                spamstring(plr2.Character.HumanoidRootPart)
+                            until os.clock() - startTime >= 180 or not getgenv().Setting["startkill"] or getgenv().Setting["selectfruit2"] ~= "String" or not plr2 or not IsPlayerAlive(plr2) or not IsPlayerAlive()
+                            Powers.String.RemoteEvent:FireServer(
+                                getsenv(Character.Powers.String).VTCjwbvx, "StringPower1")
+                        elseif getgenv().Setting["selectfruit2"] == "Quake" then
+                            repeat
+                                wait(.1)
+                                plr2 = game.Players:FindFirstChild(getgenv().Setting["chooseplr"])
+                                if not plr2 or not IsPlayerAlive(plr2) then break end
+                                spamquake(plr2.Character.HumanoidRootPart)
+                            until not getgenv().Setting["startkill"] or getgenv().Setting["selectfruit2"] ~= "Quake" or not plr2 or not IsPlayerAlive(plr2) or not IsPlayerAlive()
+                        else
+                            local Fruit = getgenv().Setting["selectfruit2"]
+                            repeat
+                                wait(.1)
+                                plr2 = game.Players:FindFirstChild(getgenv().Setting["chooseplr"])
+                                if not plr2 or not IsPlayerAlive(plr2) then  break end
+                                listspam[Fruit](plr2.Character.HumanoidRootPart)
+                                if LocalPlayer.Character.Powers[Fruit]:FindFirstChild("Shots") then
+                                    spawn(function()
+                                        for i,v in pairs(LocalPlayer.Character.Powers[Fruit].Shots:GetChildren()) do
+                                            if not plr2 or not IsPlayerAlive(plr2) then  break end
+                                            if v:FindFirstChildOfClass('BodyPosition') then v:FindFirstChildOfClass('BodyPosition'):Destroy() end
+                                            if v:FindFirstChildOfClass('RocketPropulsion') then v:FindFirstChildOfClass('RocketPropulsion'):Destroy() end
+                                            v.Size = Vector3.new(500,500,500)
+                                            v.CFrame = plr2.Character.HumanoidRootPart.CFrame
+                                        end
+                                    end)
+                                end
+                            until not getgenv().Setting["startkill"] or getgenv().Setting["selectfruit2"] ~= Fruit or not plr2 or not IsPlayerAlive(plr2) or not IsPlayerAlive()
+                        end
+                    end
+                end
+        end
+    end)
+end)
+Tabs.PvP:AddToggle("detectcb", {
+    Title = "Detect Cannon Ball",
+    Default = getgenv().Setting["detectcb"] or false,
+    Callback = function(Value)
+        SaveSettings("detectcb", Value)
+    end
+})
+spawn(function()
+    while wait() do
+        pcall(function()
+            if getgenv().Setting["detectcb"] and getgenv().Setting["selectfruit2"] ~= "String" and getgenv().Setting["selectfruit2"] ~= "" then
+                local Players = game:GetService("Players")
+                local localPlayer = Players.LocalPlayer
+                local localCharacter = localPlayer.Character
+
+                for _, player in ipairs(Players:GetPlayers()) do
+                    wait(.1)
+                    if player.name ~= localPlayer.Name and IsPlayerAlive(player) then
+                        if player.Character:FindFirstChild("Cannon Ball") then
+                            print(player.Name)
+                            if getgenv().Setting["selectfruit2"] == "Quake" then
+                                repeat
+                                    wait(.1)
+                                        spamquake(player.Character:FindFirstChild("HumanoidRootPart"))
+                                until not getgenv().Setting["detectcb"] or getgenv().Setting["selectfruit2"] ~= "Quake" or not IsPlayerAlive(player)
+                            else
+                                methodtp:SetValue("Above")
+                                getgenv().Setting["chooseplr"] = player.Name
+                                tpplr:SetValue(true)
+                                repeat
+                                    wait(.1)
+                                    if not IsPlayerAlive(player) then break end
+                                    listspam[getgenv().Setting["selectfruit2"]](player.Character:FindFirstChild("HumanoidRootPart"))
+                                until not getgenv().Setting["detectcb"] or not IsPlayerAlive(player)
+                                print(' set false')
+                                tpplr:SetValue(false)
+                                getgenv().Setting["chooseplr"] = ""
+                                RemoveVelocity()
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+Tabs.PvP:AddToggle("quakeall", {
+    Title = "Quake Kill All",
+    Default = getgenv().Setting["quakeall"] or false,
+    Callback = function(Value)
+        SaveSettings("quakeall", Value)
+    end
+})
+spawn(function() -- auto farm quake
+    while wait() do
+        --pcall(function()
+            if getgenv().Setting["quakeall"] then
+                if IsPlayerAlive() then
+                    for i, v in pairs(game.Players:GetChildren()) do
+                        if v.Name ~= game.Players.LocalPlayer.Name and IsPlayerAlive(v)then
+                            repeat
+                                if not IsPlayerAlive(v) or not IsPlayerAlive() or not Setting["quakeall"] then break end
+                                spamquake(v.Character.HumanoidRootPart)
+                                wait(.1)
+                            until not IsPlayerAlive(v) or not IsPlayerAlive() or not Setting["quakeall"]
+                        end
+                    end
+                end
+            end
+        --end)
+    end
+end)
+getgenv().Hobbied = {}
+Tabs.PvP:AddToggle("hobbyall", {
+    Title = "Hobby All",
+    Default = getgenv().Setting["hobbyall"] or false,
+    Callback = function(Value)
+        SaveSettings("hobbyall", Value)
+    end
+})
+Tabs.PvP:AddSection("Camp Players by Cannon Ball Method")
+Tabs.PvP:AddSlider("posy", {
+    Title = "Position Y",
+    Description = "",
+    Default = getgenv().Setting["posy"] or 1,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Callback = function(Value)
+        SaveSettings("posy", Value)
+    end
+})
+Tabs.PvP:AddToggle("bringplr", {
+    Title = "Bring Player",
+    Default = getgenv().Setting["bringplr"] or false,
+    Callback = function(Value)
+        SaveSettings("bringplr", Value)
+    end
+})
+spawn(function()
+    while wait(0.5) do
+        pcall(function()
+            if getgenv().Setting["bringplr"] or (getgenv().Setting["selectfruit2"] == "String" and getgenv().Setting["startkill"]) then
+                local chosenPlayerName = getgenv().Setting["chooseplr"]
+                local player = game.Players:FindFirstChild(chosenPlayerName)
+
+                if player and player.Character then
+                    local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                    local humanoid = player.Character:FindFirstChild("Humanoid")
+
+                    if humanoidRootPart and humanoid and humanoid.Health > 0 then
+                        wait()
+                        humanoidRootPart.Transparency = 0.9
+                        humanoidRootPart.Color = Color3.fromRGB(255, 255, 255)
+                        humanoidRootPart.CanCollide = false
+
+                        humanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame *
+                            CFrame.new(0, getgenv().Setting["posy"], -5)
+                    end
+                end
+            end
+        end)
+    end
+end)
+Tabs.PvP:AddSlider("sizeplr", {
+    Title = "Size Player",
+    Description = "",
+    Default = getgenv().Setting["sizeplr"] or 10,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+    Callback = function(Value)
+        SaveSettings("sizeplr", Value)
+    end
+})
+Tabs.PvP:AddToggle("hbplr", {
+    Title = "HitBox",
+    Default = getgenv().Setting["hbplr"] or false,
+    Callback = function(Value)
+        SaveSettings("hbplr", Value)
+    end
+})
+spawn(function()
+    while wait(0.5) do
+        pcall(function()
+            if getgenv().Setting["hbplr"] then
+                local chosenPlayerName = getgenv().Setting["chooseplr"]
+                local player = game.Players:FindFirstChild(chosenPlayerName)
+
+                if player and player.Character then
+                    local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                    local humanoid = player.Character:FindFirstChild("Humanoid")
+
+                    if humanoidRootPart and humanoid and humanoid.Health > 0 then
+                        wait()
+                        humanoidRootPart.Size = Vector3.new(getgenv().Setting["sizeplr"], getgenv().Setting["sizeplr"],
+                            getgenv().Setting["sizeplr"])
+                    end
+                end
+            end
+        end)
+    end
+end)
+Tabs.PvP:AddToggle("plrcannon", {
+    Title = "Kill Player by Cannon Ball",
+    Default = getgenv().Setting["plrcannon"] or false,
+    Callback = function(Value)
+        SaveSettings("plrcannon", Value)
+        _G.plrcannon = Value
+    end
+})
+HitboxLimbs = { "HumanoidRootPart", "Head", "Left Arm", "Left Leg" }
+spawn(function()
+    while task.wait(0) do
+        pcall(function()
+            if getgenv().Setting["plrcannon"] and _G.plrcannon then
+                fireclickdetector(workspace.Island11.CentralBuilding.Doors.Button.Button.ClickDetector)
+                if not game.Players.LocalPlayer.PlayerGui.HealthBar.Frame.Status:FindFirstChild("BusoHaki") then
+                    game.workspace.UserData["User_" .. game.Players.LocalPlayer.UserId].UpdateHaki:FireServer()
+                end
+                wait(0.2)
+                local args = {
+                    [1] = game.Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild('HumanoidRootPart').CFrame
+                }
+                game:GetService("Players").LocalPlayer.Character:FindFirstChild("Cannon Ball").RemoteEvent
+                    :FireServer(unpack(args))
+                fireclickdetector(workspace.Island11.CentralBuilding.Doors.Button.Button.ClickDetector)
+                if game.Players.LocalPlayer.PlayerGui.HealthBar.Frame.Status:FindFirstChild("BusoHaki") then
+                    game.workspace.UserData["User_" .. game.Players.LocalPlayer.UserId].UpdateHaki:FireServer()
+                end
+            end
+        end)
+    end
+end)
+function createbodypos(a, BringCFrame)
+    local body = Instance.new("BodyPosition")
+    body.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    body.P = 500000
+    body.D = 325
+    body.Position = BringCFrame.Position
+    body.Parent = a
+end
+function createvectorforce(v, target)
+    local attachment = Instance.new("Attachment",v)
+    attachment.Name = "testcannon"
+    local vectorForce = Instance.new("VectorForce")
+    vectorForce.Attachment0 = attachment
+    vectorForce.RelativeTo = Enum.ActuatorRelativeTo.World
+    vectorForce.Force = (target.Position - v.Position).Unit * 50000000  -- Đẩy mạnh về hướng người chơi
+    vectorForce.Parent = attachment
+end
+spawn(function()
+    while task.wait(0) do
+        pcall(function()
+            if getgenv().Setting["plrcannon"] and _G.plrcannon and IsPlayerAlive(game.Players:FindFirstChild(getgenv().Setting["chooseplr"])) then
+                for i, v in pairs(game.workspace.ResourceHolder["Resources_" .. game.Players.LocalPlayer.UserId]:GetChildren()) do
+                    if v.Name == "CannonBall" and not v:HasTag("Brought") then
+                        v:AddTag("Brought")
+                        if not v:FindFirstChild("god") then
+                            local aF = Instance.new("BodyVelocity", v)
+                            aF.Name = "god"
+                            aF.MaxForce = Vector3.new(100000, 100000, 100000)
+                            aF.Velocity = Vector3.new(0, 0, 0)
+                        end
+                        --v.CanCollide = false
+                        spawn(function()
+                            repeat wait()
+                                if not v:FindFirstChild('testcannon') then
+                                    createvectorforce(v, Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild('Head').CFrame)
+                                end
+                                if not v:FindFirstChildOfClass('BodyPosition') then
+                                    createbodypos(v, Players:FindFirstChild(getgenv().Setting["chooseplr"]).Character:FindFirstChild('Head').CFrame)
+                                end
+                                wait(.2)
+                                v.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,100,0)
+                                if v:FindFirstChildOfClass('BodyPosition') then v:FindFirstChildOfClass('BodyPosition'):Destroy() end
+                                if v:FindFirstChild('testcannon') then v:FindFirstChild('testcannon'):Destroy() end
+                            until not v or not v.Parent
+                        end)
+                    end 
+                end
+            end
+        end)
+    end
+end)
+Tabs.Fruit:AddToggle("stealfruit", {
+    Title = "Steal Fruit",
+    Default = getgenv().Setting["stealfruit"] or false,
+    Callback = function(Value)
+        SaveSettings("stealfruit", Value)
+    end
+})
+spawn(function()
+    --pcall(function()
+        while true do
+            wait()
+            if getgenv().Setting["stealfruit"] then
+                for _, player in pairs(game.Players:GetChildren()) do
+                    if IsPlayerAlive(player) then
+                        local items = { player.Backpack:GetChildren(), player.Character:GetChildren() }
+
+                        for _, container in ipairs(items) do
+                            for _, tool in pairs(container) do
+                                if tool.ClassName == "Tool" then
+                                    if table.find(ListAllDevilFurits, tool.Name) then
+                                        local Aura = if tool:FindFirstChild("Main") and tool.Main:FindFirstChild("AuraAttachment") then '(Aura)' else '(Normal)'
+                                        noti2(string.format("Fruit Name : %s " .. Aura .. " | Owner : %s", tool.Name, player.Name), 5)
+                                        repeat
+                                            wait(0.1)
+                                            if IsPlayerAlive(player) then
+                                                spamquake(player.Character:FindFirstChild("HumanoidRootPart"))
+                                            end
+                                        until not getgenv().Setting["stealfruit"] or not IsPlayerAlive(player)
+                                    elseif string.find(string.lower(tool.Name), string.lower("Fruit")) and tool:FindFirstChild("Main") and tool.Main:FindFirstChild("AuraAttachment") then
+                                        noti2(string.format("Fruit Name : %s (Aura) | Owner : %s",tool.Name, player.Name), 5)
+                                        repeat
+                                            wait(0.1)
+                                                spamquake(player.Character:FindFirstChild("HumanoidRootPart"))
+                                        until not getgenv().Setting["stealfruit"] or not IsPlayerAlive(player)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    --end)
+end)
+--2
+spawn(function()
+    --pcall(function()
+        while true do
+            wait()
+            for _, player in pairs(game.Players:GetChildren()) do
+                if IsPlayerAlive(player) then
+                    local items = { player.Backpack:GetChildren(), player.Character:GetChildren() }
+
+                    for _, container in ipairs(items) do
+                        for _, tool in pairs(container) do
+                            if tool.ClassName == "Tool" then
+                                if table.find(ListAllDevilFurits, tool.Name) then
+                                    local Aura = if tool:FindFirstChild("Main") and tool.Main:FindFirstChild("AuraAttachment") then '(Aura)' else '(Normal)'
+                                    spawn(function()
+                                        PostWebhook(
+                                            "https://discord.com/api/webhooks/1302955165216669737/eoWk5BLa369CFDXTMfj3I8V1Xe776G6klluJwbVf6JwcOi6_L3HxeYl7_TsM9Pgg9hrn",
+                                            {
+                                                content = "@everyone",
+                                                embeds = {
+                                                    {
+                                                        title = "God Hub",
+                                                        description = "Detected Fruit",
+                                                        fields = {
+                                                            {
+                                                                name = "Information",
+                                                                value = string.format("**Fruit Name : %s".. Aura.." | Owner : %s**",tool.Name,player.Name),
+                                                                inline = true
+                                                            },
+                                                            {
+                                                                name = "Teleport Script",
+                                                                value =
+                                                                    "`game:GetService(\"TeleportService\"):TeleportToPlaceInstance(\"" ..
+                                                                    game.PlaceId ..
+                                                                    "\",\"" ..
+                                                                    game.JobId ..
+                                                                    "\", game:GetService(\"Players\").LocalPlayer)`",
+                                                                inline = true
+                                                            }
+                                                        },
+                                                        footer = {
+                                                            text = "God Hub",
+                                                        },
+                                                        timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+                                                    }
+                                                }
+                                            })
+                                    end)
+                                elseif string.find(string.lower(tool.Name), string.lower("Fruit")) and tool:FindFirstChild("Main") and tool.Main:FindFirstChild("AuraAttachment") then
+                                    spawn(function()
+                                        PostWebhook(
+                                            "https://discord.com/api/webhooks/1302955165216669737/eoWk5BLa369CFDXTMfj3I8V1Xe776G6klluJwbVf6JwcOi6_L3HxeYl7_TsM9Pgg9hrn",
+                                            {
+                                                content = "@everyone",
+                                                embeds = {
+                                                    {
+                                                        title = "God Hub",
+                                                        description = "Detected Fruit",
+                                                        fields = {
+                                                            {
+                                                                name = "Information",
+                                                                value = string.format(
+                                                                    "**Fruit Name : %s (Aura) | Owner : %s**", tool.Name,
+                                                                    player.Name),
+                                                                inline = true
+                                                            },
+                                                            {
+                                                                name = "Teleport Script",
+                                                                value =
+                                                                    "`game:GetService(\"TeleportService\"):TeleportToPlaceInstance(\"" ..
+                                                                    game.PlaceId ..
+                                                                    "\",\"" ..
+                                                                    game.JobId ..
+                                                                    "\", game:GetService(\"Players\").LocalPlayer)`",
+                                                                inline = true
+                                                            }
+                                                        },
+                                                        footer = {
+                                                            text = "God Hub",
+                                                        },
+                                                        timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+                                                    }
+                                                }
+                                            })
+                                    end)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    --end)
+end)
+Tabs.Fruit:AddToggle("bringfr", {
+    Title = "Bring Fruit",
+    Default = getgenv().Setting["bringfr"] or false,
+    Callback = function(Value)
+        SaveSettings("bringfr", Value)
+    end
+})
+spawn(function()
+    pcall(function()
+        while true do
+            wait(0.1)
+            if getgenv().Setting["bringfr"] then
+                pcall(function()
+                    for i, v in pairs(game.Workspace.Trees.Tree.Model:GetChildren()) do
+                        if v.ClassName == "Tool" then
+                            fireclickdetector(v.Main.ClickDetector)
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+end)
+Tabs.Fruit:AddDropdown("numberofsto", {
+    Title = "Number of Sto",
+    Values = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" },
+    Multi = true,
+    Default = getgenv().Setting["numberofsto"] or {},
+    Callback = function(a)
+        SaveSettings("numberofsto", a) -- excample a = {["1"] = true, ["2"] = true}
+    end
+})
+Tabs.Fruit:AddToggle("autosto", {
+    Title = "Auto Storage",
+    Default = getgenv().Setting["autosto"] or false,
+    Callback = function(Value)
+        SaveSettings("autosto", Value)
+    end
+})
+function canstore(Number)
+    if game.Players.LocalPlayer.PlayerGui.Storage.Frame["StoredDF" .. Number].Button.Text == "Store" and game.Players.LocalPlayer.PlayerGui.Storage.Frame["StoredDF" .. Number].Visible == true then
+        return true
+    end
+    return false
+end
+
+--[[spawn(function()
+    pcall(function()
+        while true do
+            wait(0.1)
+            if getgenv().Setting["autosto"] then
+                for Index, Value in pairs(getgenv().Setting["numberofsto"]) do
+                    if Value and canstore(Index) then
+                        for _, Fruit in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                            if Fruit.ClassName == "Tool" then
+                                if table.find(ListAllDevilFurits, Fruit.Name) then
+                                    game.Players.LocalPlayer.Character.Humanoid:UnequipTools()
+                                    Fruit.Parent = game.Players.LocalPlayer.Character
+                                    game:GetService("Workspace").UserData["User_" .. game.Players.LocalPlayer.UserId]
+                                        .StoredDFRequest:FireServer("StoredDF" .. Index)
+                                    break
+                                elseif string.find(string.lower(Fruit.Name), string.lower("Fruit")) and Fruit:FindFirstChild("Main") and Fruit.Main:FindFirstChild("AuraAttachment") then
+                                    spawn(function()
+                                        PostWebhook2({
+                                            embeds = {
+                                                {
+                                                    title = "God Hub Webhook",
+                                                    description = string.format("Stored Fruit: %s (Aura)", Fruit.Name),
+                                                    footer = {
+                                                        text = "God Hub",
+                                                    },
+                                                    timestamp = os.date("!%Y-%m-%dT%H:%M:%S")
+                                                }
+                                            }
+                                        })
+                                    end)
+                                    game.Players.LocalPlayer.Character.Humanoid:UnequipTools()
+                                    Fruit.Parent = game.Players.LocalPlayer.Character
+                                    game:GetService("Workspace").UserData["User_" .. game.Players.LocalPlayer.UserId]
+                                        .StoredDFRequest:FireServer("StoredDF" .. Index)
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end)]] --
+Tabs.Sam:AddDropdown("amountsam", {
+    Title = "Amount",
+    Values = { "1", "10" },
+    Multi = false,
+    Default = getgenv().Setting["amountsam"] or "",
+    Callback = function(Value)
+        SaveSettings("amountsam", Value)
+    end
+})
+Tabs.Sam:AddToggle("claimsam", {
+    Title = "Claim Sam",
+    Default = getgenv().Setting["claimsam"] or false,
+    Callback = function(Value)
+        SaveSettings("claimsam", Value)
+    end
+})
+spawn(function()
+    while true do
+        wait()
+        if getgenv().Setting["claimsam"] and getgenv().Setting["amountsam"] ~= "" then
+            workspace.Merchants.QuestMerchant.Clickable.Retum:FireServer("Claim" .. getgenv().Setting["amountsam"] or "1")
+        end
+    end
+end)
+
+Tabs.Sam:AddToggle("findsam", {
+    Title = "Auto Find Sam",
+    Default = getgenv().Setting["findsam"] or false,
+    Callback = function(Value)
+        SaveSettings("findsam", Value)
+    end
+})
+Tabs.Sam:AddToggle("openbox", {
+    Title = "Auto Open Box",
+    Default = getgenv().Setting["openbox"] or false,
+    Callback = function(Value)
+        SaveSettings("openbox", Value)
+    end
+})
+Tabs.Lucy:AddDropdown("methodlucy", {
+    Title = "Payment Method",
+    Values = { "Cash", "Gems" },
+    Multi = false,
+    Default = getgenv().Setting["methodlucy"] or "",
+    Callback = function(Value)
+        SaveSettings("methodlucy", Value)
+    end
+})
+Tabs.Lucy:AddDropdown("lock1", {
+    Title = "Lock Stats\nDFT1",
+    Values = { "Defense", "Melee", "Sniper", "Sword" },
+    Multi = true,
+    Default = getgenv().Setting["lock1"] or {},
+    Callback = function(selectedValues)
+        SaveSettings("lock1", selectedValues)
+    end
+})
+Tabs.Lucy:AddDropdown("select1", {
+    Title = "Select Stats\nDFT1",
+    Values = { "Defense", "Melee", "Sniper", "Sword" },
+    Multi = true,
+    Default = getgenv().Setting["select1"] or {},
+    Callback = function(Value)
+        SaveSettings("select1", Value)
+    end
+})
+local startdft1 = Tabs.Lucy:AddToggle("startfind1", {
+    Title = "Start Find\nDFT1",
+    Default = getgenv().Setting["startfind1"] or false,
+    Callback = function(Value)
+        SaveSettings("startfind1", Value)
+    end
+})
+--2
+Tabs.Lucy:AddDropdown("lock2", {
+    Title = "Lock Stats\nDFT2",
+    Values = { "Defense", "Melee", "Sniper", "Sword" },
+    Multi = true,
+    Default = getgenv().Setting["lock2"] or {},
+    Callback = function(selectedValues)
+        SaveSettings("lock2", selectedValues)
+    end
+})
+Tabs.Lucy:AddDropdown("select2", {
+    Title = "Select Stats\nDFT2",
+    Values = { "Defense", "Melee", "Sniper", "Sword" },
+    Multi = true,
+    Default = getgenv().Setting["select2"] or {},
+    Callback = function(Value)
+        SaveSettings("select2", Value)
+    end
+})
+local startdft2 = Tabs.Lucy:AddToggle("startfind2", {
+    Title = "Start Find\nDFT2",
+    Default = getgenv().Setting["startfind2"] or false,
+    Callback = function(Value)
+        SaveSettings("startfind2", Value)
+    end
+})
+local plrid = tostring(game.Players.LocalPlayer.UserId)
+local data = workspace.UserData["User_" .. plrid].Data
+local function getDftStats()
+    return {
+        [1] = {
+            defense = data.DFT1Defense.Value,
+            sniper = data.DFT1Sniper.Value,
+            melee = data.DFT1Melee.Value,
+            sword = data.DFT1Sword.Value
+        },
+        [2] = {
+            defense = data.DFT2Defense.Value,
+            sniper = data.DFT2Sniper.Value,
+            melee = data.DFT2Melee.Value,
+            sword = data.DFT2Sword.Value
+        }
+    }
+end
+local function rollStats(selectedStats, dftNumber, middle, method)
+    local args = { "DFT" .. dftNumber, false, false, false, false, method }
+    local dftStats = getDftStats()[dftNumber]
+    local allValues = { "defense", "melee", "sniper", "sword" }
+    local count = 0
+    for _, stat in pairs(allValues) do
+        local index = (stat == "defense" and 2) or
+            (stat == "melee" and 3) or
+            (stat == "sniper" and 4) or
+            (stat == "sword" and 5)
+        if selectedStats[stat] then
+            args[index] = true
+        elseif dftStats[stat] >= getgenv().AffinityToFind[dftNumber][stat:upper()] then
+            if table.find(middle, stat) then
+                count += 1
+                print(stat .. " has received 1.9, locking...")
+                args[index] = true
+            elseif not table.find(middle, stat) then
+                print(stat .. " has received 1.9 but not in selected, rolling")
+            end
+        end
+    end
+    if count >= #middle then
+        print('rolled out all selected affinities')
+        if dftnumber == 1 then
+            startdft1:SetValue(false)
+        else
+            startdft2:SetValue(false)
+        end
+        return
+    end
+    workspace:WaitForChild("Merchants"):WaitForChild("AffinityMerchant"):WaitForChild("Clickable"):WaitForChild("Retum")
+        :FireServer(unpack(args))
+end
+local allValues = { "defense", "melee", "sniper", "sword" }
+spawn(function()
+    pcall(function()
+        while true do
+            wait(10)
+            if getgenv().Setting["startfind1"] and getgenv().Setting["methodlucy"] ~= "" then
+                local result = {}
+                local middle = {}
+                for _, value in pairs(allValues) do
+                    result[value] = false
+                end
+
+                for key, stat in pairs(getgenv().Setting["lock1"] or {}) do
+                    result[key:lower()] = true
+                end
+                local dftNumber = 1
+                local canRoll = false
+                for key, rollStat in pairs(getgenv().Setting["select1"] or {}) do
+                    local statLower = key:lower()
+                    local currentStatValue = getDftStats()[dftNumber][statLower]
+                    if not result[statLower] then
+                        canRoll = true
+                        table.insert(middle, statLower)
+                    end
+                end
+                if canRoll then
+                    rollStats(result, dftNumber, middle, getgenv().Setting["methodlucy"])
+                else
+                    print("No available stats to roll.")
+                end
+            end
+        end
+    end)
+end)
+--2
+spawn(function()
+    pcall(function()
+        while true do
+            wait(10)
+            if getgenv().Setting["startfind2"] and getgenv().Setting["methodlucy"] ~= "" then
+                local result = {}
+                local middle = {}
+                for _, value in pairs(allValues) do
+                    result[value] = false
+                end
+
+                for key, stat in pairs(getgenv().Setting["lock2"] or {}) do
+                    result[key:lower()] = true
+                end
+                local dftNumber = 2
+                local canRoll = false
+                for key, rollStat in pairs(getgenv().Setting["select2"] or {}) do
+                    local statLower = key:lower()
+                    local currentStatValue = getDftStats()[dftNumber][statLower]
+                    if not result[statLower] then
+                        canRoll = true
+                        table.insert(middle, statLower)
+                    end
+                end
+                if canRoll then
+                    rollStats(result, dftNumber, middle, getgenv().Setting["methodlucy"])
+                else
+                    print("No available stats to roll.")
+                end
+            end
+        end
+    end)
+end)
+local Priority = {
+    ["Auto Safe Zone"] = 1,
+    ["Auto Mixer"] = 2,
+    ["Auto Fishing"] = 3,
+    ["Auto Package"] = 4,
+    ["Auto Find Sam"] = 5,
+    ["Auto Open Box"] = 6,
+    ["Auto Storage"] = 7,
+}
+local PriorityQueue = {}
+function PriorityQueue:new()
+    local obj = { queue = {}, indexMap = {} }
+    setmetatable(obj, self)
+    self.__index = self
+    return obj
+end
+
+function PriorityQueue:push(element, priority)
+    if self.indexMap[element] then return end -- Prevent duplicates
+    local task = { element = element, priority = priority }
+    table.insert(self.queue, task)
+    self.indexMap[element] = #self.queue -- Store the index
+    self:sortQueue()
+end
+
+function PriorityQueue:pop(element)
+    local index = self.indexMap[element]
+    if index then
+        local removedTask = table.remove(self.queue, index)
+        self.indexMap[element] = nil -- Remove from index map
+        self:updateIndices(index)
+        return removedTask
+    end
+end
+
+function PriorityQueue:top()
+    return self.queue[1] and self.queue[1].element
+end
+
+function PriorityQueue:empty()
+    return #self.queue == 0
+end
+
+function PriorityQueue:sortQueue()
+    table.sort(self.queue, function(a, b)
+        return a.priority > b.priority
+    end)
+    for i, task in ipairs(self.queue) do
+        self.indexMap[task.element] = i -- Update indices
+    end
+end
+
+function PriorityQueue:updateIndices(startIndex)
+    for i = startIndex, #self.queue do
+        local task = self.queue[i]
+        if task then
+            self.indexMap[task.element] = i
+        end
+    end
+end
+
+local queue = PriorityQueue:new()
+local function findsam()
+    if queue:empty() or queue:top() ~= "Auto Find Sam" then
+        return
+    end
+    if Setting.antistring then _G.antistring = false end
+    wait()
+    jumpoutthechair()
+    if queue:top() == "Auto Find Sam" then
+        pcall(function()
+            if queue:empty() or queue:top() ~= "Auto Find Sam" then
+                return
+            end
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Character
+                :FindFirstChild("Compass").Poser.Value)
+            wait(.1)
+            game.Players.LocalPlayer.Character.Compass:Activate()
+        end)
+    end
+    task.delay(1, function()
+        if Setting.antistring then _G.antistring = true end
+    end)
+end
+local function checkfruitsto()
+    for _, Tool in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if Tool:IsA("Tool") and (table.find(ListAllDevilFurits, Tool.Name) or (string.find(string.lower(Tool.Name), string.lower("Fruit")) and Tool:FindFirstChild("Main") and Tool.Main:FindFirstChild("AuraAttachment"))) then
+            holdingFruit = true
+            fruitToStore = Tool
+            break
+        end
+    end
+
+    if holdingFruit and fruitToStore then
+        return true
+    else
+        for _, Fruit in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if Fruit:IsA("Tool") then
+                if table.find(ListAllDevilFurits, Fruit.Name) or (string.find(string.lower(Fruit.Name), string.lower("Fruit")) and Fruit:FindFirstChild("Main") and Fruit.Main:FindFirstChild("AuraAttachment")) then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+local function autostorage()
+    function canstore(Number)
+        return game.Players.LocalPlayer.PlayerGui.Storage.Frame["StoredDF" .. Number].Button.Text == "Store" and
+            game.Players.LocalPlayer.PlayerGui.Storage.Frame["StoredDF" .. Number].Visible == true
+    end
+    if queue:empty() or queue:top() ~= "Auto Storage" then
+        queue:pop("Auto Storage")
+        return
+    end
+    if getgenv().Setting["autosto"] and checkfruitsto() then
+        for i = 1, 12 do
+            if canstore(i) then
+                local holdingFruit = false
+                local fruitToStore = nil
+
+                for _, Tool in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if Tool:IsA("Tool") and (table.find(ListAllDevilFurits, Tool.Name) or (string.find(string.lower(Tool.Name), string.lower("Fruit")) and Tool:FindFirstChild("Main") and Tool.Main:FindFirstChild("AuraAttachment"))) then
+                        holdingFruit = true
+                        fruitToStore = Tool
+                        break
+                    end
+                end
+
+                if holdingFruit and fruitToStore then
+                    game:GetService("Workspace").UserData["User_" .. game.Players.LocalPlayer.UserId]
+                        .StoredDFRequest:FireServer("StoredDF" .. i)
+                else
+                    for _, Fruit in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                        if Fruit:IsA("Tool") then
+                            if table.find(ListAllDevilFurits, Fruit.Name) or (string.find(string.lower(Fruit.Name), string.lower("Fruit")) and Fruit:FindFirstChild("Main") and Fruit.Main:FindFirstChild("AuraAttachment")) then
+                                game.Players.LocalPlayer.Character.Humanoid:UnequipTools()
+                                Fruit.Parent = game.Players.LocalPlayer.Character
+                                game:GetService("Workspace").UserData["User_" .. game.Players.LocalPlayer.UserId]
+                                    .StoredDFRequest:FireServer("StoredDF" .. i)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+function checkbox()
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA("Tool") and string.find(v.Name, "Box") then
+            return true
+        end
+    end
+    return false
+end
+
+function openbox()
+    if queue:empty() or queue:top() ~= "Auto Open Box" then
+        queue:pop("Auto Open Box")
+        return
+    end
+    if queue:top() == "Auto Open Box" and checkbox() then
+        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do wait()
+            if v:IsA("Tool") and string.find(v.Name, "Box") then
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                v:Activate()
+            end
+        end
+    end
+end
+
+function tpsafezone()
+    if queue:empty() or queue:top() ~= "Auto Safe Zone" then
+        queue:pop("Auto Safe Zone")
+        return
+    end
+    for i, v in pairs(game:GetService("Workspace").ISLAND:GetChildren()) do
+        if v.Name == "Base1" then
+            repeat
+                wait()
+                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude > 50 then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame *
+                        CFrame.new(0, 5, 0)
+                end
+            until queue:top() ~= "Auto Safe Zone" or (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.CFrame.Position).Magnitude <= 50 or game.Players.LocalPlayer.Character.Humanoid.Health <= 0 or checkdistance(game.Players.LocalPlayer.Character.HumanoidRootPart, game:GetService("Workspace").CustomizeModel.SpawnAreaStuffK.HBase) <= 10000
+        end
+    end
+end
+
+function checkmixer()
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA("Tool") and string.find(v.Name, "Juice") or string.find(v.Name, "Milk") or string.find(v.Name, "Cider") or string.find(v.Name, "Lemonade") or string.find(v.Name, "Smoothie") or string.find(v.Name, "Golden") then
+            return true
+        end
+    end
+    return false
+end
+function automixer()
+    if queue:empty() or queue:top() ~= "Auto Mixer" then
+        queue:pop("Auto Mixer")
+        return
+    end
+    if checkmixer() then
+        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA("Tool") and string.find(v.Name, "Juice") or string.find(v.Name, "Milk") or string.find(v.Name, "Cider") or string.find(v.Name, "Lemonade") or string.find(v.Name, "Smoothie") or string.find(v.Name, "Golden") then
+                v.Parent = game.Players.LocalPlayer.Character
+                game:GetService 'VirtualUser':CaptureController()
+                game:GetService 'VirtualUser':Button1Down(Vector2.new(1280, 672))
+            end
+        end
+    end
+    if not checkmixer() then
+        for i, v in pairs(game.Workspace:GetChildren()) do
+            if v.ClassName == "Tool" then
+                v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart
+                    .CFrame
+            end
+        end
+        wait(1)
+        for i, c in pairs({workspace.Barrels.Barrels, workspace.Barrels.Crates}) do
+            if not getgenv().Setting["autostas"] then break; end
+            for i, v in pairs(c:GetChildren()) do
+                if v.name == "Barrel" or v.name == "Crate" and v:FindFirstChild("ClickDetector") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame *
+                        CFrame.new(0, 1, -2)
+                    wait(0.1)
+                    fireclickdetector(v.ClickDetector)
+                end
+            end
+        end
+        for i, v in pairs(game:GetService("Workspace").Island8.Kitchen:GetDescendants()) do
+            if v:IsA("ClickDetector") then
+                fireclickdetector(v)
+            end
+        end
+        wait(10)
+    end
+end
+
+function checkfish()
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if string.find(v.Name, "Busser") or string.find(v.Name, "Jawber") or string.find(v.Name, "Lubber") or string.find(v.Name, "Flooper") then
+            return true
+        end
+    end
+    return false
+end
+
+function CheckBackPack(bx)
+    BackpackandCharacter = { game.Players.LocalPlayer.Backpack, game.Players.LocalPlayer.Character }
+    for al, by in pairs(BackpackandCharacter) do
+        for r, v in pairs(by:GetChildren()) do
+            if v.Name == bx then
+                return v
+            end
+        end
+    end
+    return nil
+end
+
+function autofishing()
+    local Rod = CheckBackPack(getgenv().Setting["chooserod"])
+    if Rod and Rod.Parent == LocalPlayer.Character then
+        if GetDistance(game:GetService("Workspace").ISLAND.Base2) >= 5 then
+            repeat
+                LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").ISLAND.Base2.CFrame * CFrame.new(0,5,0)
+                wait()
+            until GetDistance(game:GetService("Workspace").ISLAND.Base2) < 5
+            wait(1)
+        end
+        if GetDistance(game:GetService("Workspace").ISLAND.Base2) < 5 then
+            if Rod:FindFirstChild("Cast") then
+                local Cast = Rod:FindFirstChild("Cast")
+                if #Cast:GetChildren() == 0 then
+                    Rod.Click:FireServer((LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5) + LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 13).Position)
+                end
+                if #Cast:GetChildren() > 0 and Cast:FindFirstChild('Bobber') then
+                    if Cast.Bobber.Effect.Enabled then
+                        Rod.Click:FireServer((LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5) + LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 13).Position)
+                    end
+                end
+            end
+        end
+    else
+        return
+    end
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if string.find(v.Name, "Busser") or string.find(v.Name, "Jawber") or string.find(v.Name, "Lubber") or string.find(v.Name, "Flooper") then
+            v.Parent = game.Players.LocalPlayer.Character
+            wait(0.3)
+            game:GetService("Players").LocalPlayer.Character[v.Name].Click:FireServer(LocalPlayer.Character.HumanoidRootPart.CFrame,workspace:WaitForChild("Firepit"):WaitForChild("Part"))
+        end
+    end
+    wait(.1)
+    workspace:WaitForChild("Merchants"):WaitForChild("FishMerchant"):WaitForChild("Clickable"):WaitForChild("Retum"):FireServer()
+end
+
+function autopackage()
+    if game.Players.LocalPlayer.Character:FindFirstChild("Package") then
+        if Setting.antistring then _G.antistring = false end
+        for _, v in pairs(game.Workspace.Merchants:GetChildren()) do
+            if v:FindFirstChild("HumanoidRootPart") then
+                if v:FindFirstChild("HumanoidRootPart").CFrame.Y > 0 then
+                    if not game.Players.LocalPlayer.Character:FindFirstChild("Package") then
+                        break
+                    end
+                    wait()
+                    jumpoutthechair()
+                    wait(.5)
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position) *
+                        CFrame.new(0, 2, 0) + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 2
+                    game:GetService 'VirtualUser':CaptureController()
+                    game:GetService 'VirtualUser':Button1Down(Vector2.new(1280, 672))
+                    wait(0.2)
+                end
+            end
+        end
+        task.delay(1, function()
+            if Setting.antistring then _G.antistring = true end
+        end)
+    end
+end
+task.spawn(function()
+    while wait(.1) do
+        --pcall(function()
+            if Setting.hobbyall then
+                if IsPlayerAlive() then
+                    local check = false
+                    local localPowers = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Powers"):FindFirstChild("Hobby")
+                    for _, player in pairs(game.Players:GetChildren()) do
+                        if player.Name ~= LocalPlayer.Name and IsPlayerAlive(player, true) then
+                            local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                            if not player.Character.Hobbied.Value then
+                                check = true
+                                humanoidRootPart.Transparency = 0.9
+                            humanoidRootPart.Color = Color3.fromRGB(255, 255, 255)
+                                humanoidRootPart.CanCollide = false
+                                humanoidRootPart.Size = Vector3.new(30, 30, 30)
+                                humanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame *
+                                    CFrame.new(0, 1, -10)
+                            end
+                        end
+                    end
+                    if check then
+                        localPowers.RemoteEvent:FireServer(getsenv(localPowers).VTCoa, "HobbyPower8", "Contact",Character.HumanoidRootPart.CFrame)
+                    end
+                end
+            end
+        --end)
+    end
+end)
+spawn(function()
+    while wait() do
+        if Setting.domission then
+            local UserData = workspace.UserData:FindFirstChild("User_"..tostring(game.Players.LocalPlayer.UserId)).Data
+            if (UserData.MissionObjective.Value == "None" or (Setting.ignoreplrquest and UserData.MissionObjective.Value == "Player Kill")) and IsPlayerAlive() then
+                if UserData.MissionHour.Value ~= math.floor(math.floor(os.time() / 60) / 60) then
+                    game:GetService("Workspace").Merchants.ExpertiseMerchant.Clickable.Retum:FireServer()
+                    wait(1)
+                end
+            end
+            if UserData.MissionObjective.Value ~= "None" then
+                local TypeQuest = UserData.MissionObjective.Value
+                if TypeQuest == "Elite Kill" or TypeQuest == "Damage" or TypeQuest == "Money" or TypeQuest == "Kill" then
+                    repeat wait()
+                        cannonbeli:SetValue(true)
+                    until TypeQuest ~= UserData.MissionObjective.Value or UserData.MissionObjective.Value == "None" or not Setting.domission
+                    cannonbeli:SetValue(false)
+                elseif TypeQuest == "Player Kill" then
+                    repeat wait()
+                        cannonallplr:SetValue(true)
+                    until TypeQuest ~= UserData.MissionObjective.Value or UserData.MissionObjective.Value == "None" or not Setting.domission
+                    cannonallplr:SetValue(false)
+                elseif TypeQuest == "Quests" then
+                    repeat wait()
+                        dopackage:SetValue(true)
+                    until TypeQuest ~= UserData.MissionObjective.Value or UserData.MissionObjective.Value == "None" or not Setting.domission
+                    dopackage:SetValue(false)
+                end
+            end
+        end
+    end
+end)
+spawn(function()
+    while wait() do
+        if Setting.getmission and IsPlayerAlive() then
+            local UserData = workspace.UserData:FindFirstChild("User_"..tostring(game.Players.LocalPlayer.UserId)).Data
+            if (UserData.MissionObjective.Value == "None" or (Setting.ignoreplrquest and UserData.MissionObjective.Value == "Player Kill")) and IsPlayerAlive() then
+                if UserData.MissionHour.Value ~= math.floor(math.floor(os.time() / 60) / 60) then
+                    game:GetService("Workspace").Merchants.ExpertiseMerchant.Clickable.Retum:FireServer()
+                    wait(1)
+                end
+            end
+        end
+    end
+end)
+task.spawn(function()
+    while wait() do
+        if Setting.bombgod and IsPlayerAlive() then
+            --print(HealthPlr.Value == HealthPlr.Value)
+            if HealthPlr.Value == HealthPlr.Value then
+                local c = getsenv(Powers.Bomb).VTCcpkghc
+                Powers.Bomb.RemoteEvent:FireServer(c, "BombPower6", "StartCharging", LocalPlayer.Character.HumanoidRootPart.CFrame, LocalPlayer.Character.HumanoidRootPart, 0/0)
+                wait()
+                Powers.Bomb.RemoteEvent:FireServer(c, "BombPower6", "StopCharging", LocalPlayer.Character.HumanoidRootPart.CFrame, LocalPlayer.Character.HumanoidRootPart, 0/0)
+            --elseif game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('HealthBar') then
+                --game:GetService("Players").LocalPlayer.PlayerGui.HealthBar:Destroy()
+            end
+        end
+    end
+end)
+task.spawn(function()
+    while wait() do
+        if Setting.vampgod and IsPlayerAlive() then
+            local HealthPlr           = LocalPlayer.Character.CharacterTrait.Health
+            local MaxHealthPlr        = LocalPlayer.Character.CharacterTrait.HealthMax
+            if HealthPlr.Value == HealthPlr.Value then
+                if MaxHealthPlr.Value == HealthPlr.Value then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(188679, 150, 176128)
+                    wait(.25)
+                end
+                if MaxHealthPlr.Value > HealthPlr.Value then
+                    repeat wait()
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(100000, 3510, 80000)
+                    until GetDistance(CFrame.new(100000, 3510, 80000)) < 10
+                    wait(1)
+                    repeat
+                        if HealthPlr.Value ~= HealthPlr.Value or not IsPlayerAlive() or MaxHealthPlr.Value == HealthPlr.Value or not Setting.vampgod then break end
+                        spamVampire(LocalPlayer.Character.HumanoidRootPart, 0/0)
+                        wait()
+                    until HealthPlr.Value ~= HealthPlr.Value or not IsPlayerAlive() or MaxHealthPlr.Value == HealthPlr.Value or not Setting.vampgod
+                end
+           -- elseif game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild('HealthBar') then
+                --game:GetService("Players").LocalPlayer.PlayerGui.HealthBar:Destroy()
+            end
+        end
+    end
+end)
+task.spawn(function()
+    while wait() do
+        if Setting.farmhaki then
+            repeat wait()
+                if HakiBar.Value <= MinHakiPercentage or not getgenv().Setting["farmhaki"] then break end
+                task.spawn(function()
+                    for i=1, type(getgenv().Setting["stackhaki"]) == "number" and getgenv().Setting["stackhaki"] or 10 do
+                        if HakiBar.Value <= MinHakiPercentage or not getgenv().Setting["farmhaki"] then break end
+                        workspace:WaitForChild("UserData"):WaitForChild("User_" .. game.Players.LocalPlayer.UserId):WaitForChild("III"):FireServer("On", HakiLevel.Value)
+                        wait()
+                        workspace:WaitForChild("UserData"):WaitForChild("User_" .. game.Players.LocalPlayer.UserId):WaitForChild("III"):FireServer("Off", HakiLevel.Value)
+                    end
+                end)
+            until HakiBar.Value <= MinHakiPercentage or not getgenv().Setting["farmhaki"]
+            local count = tick()
+            repeat
+                wait()
+            until HakiBar.Value >= HakiLevel.Value or not getgenv().Setting["farmhaki"] or (tick() - count >= 60 and HakiBar.Value < HakiLevel.Value and getgenv().Setting["rjregen"])
+            if tick() - count >= 60 and HakiBar.Value < HakiLevel.Value and getgenv().Setting["rjregen"] then
+                game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+            end
+            print('regen haki')
+        end
+    end
+end)
+task.spawn(function()
+    while wait() do
+        --pcall(function()
+            if Setting.spamwp and Setting.SelectWeapon ~= "" then
+                local Weapon = CheckBackPack(Setting.SelectWeapon)
+                if Weapon then
+                    if Weapon.Parent == LocalPlayer.Backpack then
+                        Weapon.Parent = LocalPlayer.Character
+                    elseif Weapon.Parent == LocalPlayer.Character then
+                        repeat wait()
+                            task.spawn(function()
+                                for _ = 1, getgenv().Setting["stackhit"] or 10 do
+                                    if not getgenv().Setting["spamwp"] then
+                                        break;
+                                    end
+                                    Weapon.RequestAnimation:FireServer(tonumber(getsenv(Weapon:FindFirstChild("AnimationController"))["PlaceId"]))
+                                end
+                            end)
+                        until not getgenv().Setting["spamwp"]
+                    end
+                end
+            end
+        --end)
+    end
+end)
+task.spawn(function()
+    while wait() do
+        if Setting.antistring and _G.antistring and LocalPlayer.Character:FindFirstChild('HumanoidRootPart') and not LocalPlayer.Character:FindFirstChild("Humanoid").Sit then
+            for i,v in pairs(workspace.Island8:GetDescendants()) do
+                if LocalPlayer.Character:FindFirstChild("Humanoid").Sit then break end
+                if v:IsA('Seat') then v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame end
+            end
+        end
+    end
+end)
+task.spawn(function()
+    while wait() do
+        if Setting.antispam and IsPlayerAlive() then
+            pcall(function()
+                repeat
+                    wait()
+                    spawn(function()
+                        for i=1,50 do wait()
+                            if not getgenv().Setting["antispam"] or not IsPlayerAlive() then break end
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(
+                            (math.random(-1000000, 1000000)), (math.random(5000, 10000)),
+                            (math.random(-1000000, 1000000)))
+                        end
+                    end)
+                until not getgenv().Setting["antispam"] or not IsPlayerAlive()
+            end)
+        end
+    end
+end)
+if getgenv().Setting["chooserod"] == nil then
+    getgenv().Setting["chooserod"] = ""
+end
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            repeat wait() until IsPlayerAlive()
+            if getgenv().Setting["autosto"] and checkfruitsto() then
+                queue:push("Auto Storage", Priority["Auto Storage"])
+            else
+                queue:pop("Auto Storage")
+            end
+            if getgenv().Setting["openbox"] and checkbox() then
+                queue:push("Auto Open Box", Priority["Auto Open Box"])
+            else
+                queue:pop("Auto Open Box")
+            end
+            if getgenv().Setting["findsam"] and IsPlayerAlive() and (game.Players.LocalPlayer.Character:FindFirstChild("Compass") or game.Players.LocalPlayer.Backpack:FindFirstChild("Compass")) then
+                if game.Players.LocalPlayer.Character:FindFirstChild("Compass") then
+                    queue:push("Auto Find Sam", Priority["Auto Find Sam"])
+                elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Compass") and not game.Players.LocalPlayer.Character:FindFirstChild("Compass") then
+                    game.Players.LocalPlayer.Backpack:FindFirstChild("Compass").Parent = game.Players.LocalPlayer
+                        .Character
+                    queue:push("Auto Find Sam", Priority["Auto Find Sam"])
+                else
+                    queue:pop("Auto Find Sam")
+                end
+            else
+                queue:pop("Auto Find Sam")
+            end
+            if getgenv().Setting["autopackage"] and IsPlayerAlive() then
+                local package = CheckBackPack("Package")
+                if not package then
+                    if game:GetService("Workspace").Merchants.QuestFishMerchant.Clickable:FindFirstChild("BillboardGui").TextLabel.Text == "" then
+                        game.Workspace.Merchants.QuestFishMerchant.Clickable.Retum:FireServer()
+                    else
+                        queue:pop("Auto Package")
+                    end
+                end
+                if package then
+                    if package.Parent == LocalPlayer.Backpack then
+                        game.Players.LocalPlayer.Backpack:FindFirstChild("Package").Parent = game.Players.LocalPlayer
+                            .Character
+                    end
+                    if package.Parent == LocalPlayer.Character then
+                        queue:push("Auto Package", Priority["Auto Package"])
+                    end
+                end
+            else
+                queue:pop("Auto Package")
+            end
+            if getgenv().Setting["autofishing"] and getgenv().Setting["chooserod"] ~= nil and getgenv().Setting["chooserod"] ~= "" and IsPlayerAlive() then
+                if CheckBackPack(getgenv().Setting["chooserod"]) then
+                    local Rod = CheckBackPack(getgenv().Setting["chooserod"])
+                    if Rod.Parent == LocalPlayer.Backpack then Rod.Parent = LocalPlayer.Character end
+                    queue:push("Auto Fishing", Priority["Auto Fishing"])
+                end
+            else
+                queue:pop("Auto Fishing")
+            end
+            if getgenv().Setting["autostas"] then
+                queue:push("Auto Mixer", Priority["Auto Mixer"])
+            else
+                queue:pop("Auto Mixer")
+            end
+            if getgenv().Setting["safezone"] and checksafezone() and IsPlayerAlive() then
+                queue:push("Auto Safe Zone", Priority["Auto Safe Zone"])
+            else
+                queue:pop("Auto Safe Zone")
+            end
+        end)
+    end
+end)
+spawn(function()
+    while task.wait() do
+        pcall(function ()
+            if not queue:empty() then
+                if queue:top() == "Auto Find Sam" then
+                    findsam()
+                elseif queue:top() == "Auto Storage" then
+                    autostorage()
+                elseif queue:top() == "Auto Open Box" then
+                    openbox()
+                elseif queue:top() == "Auto Safe Zone" then
+                    tpsafezone()
+                elseif queue:top() == "Auto Mixer" then
+                    automixer()
+                elseif queue:top() == "Auto Package" then
+                    autopackage()
+                elseif queue:top() == "Auto Fishing" then
+                    autofishing()
+                end
+            end 
+        end)
+    end
+end)
