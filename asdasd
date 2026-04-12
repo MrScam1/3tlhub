@@ -146,6 +146,7 @@ spawn(function()
     end
 end)
 local root = GetRoot()
+while wait() do
 for i, v in pairs(game.Workspace:GetChildren()) do
             if v.ClassName == "Tool" then
                 v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart
@@ -175,5 +176,5 @@ for _, island in ipairs(islands) do
             end
         end
 end
-
+end
 print("✅ Đã farm xong tất cả các đảo!")
