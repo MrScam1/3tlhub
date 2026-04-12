@@ -165,7 +165,7 @@ for _, island in ipairs(islands) do
             if item and item:FindFirstChild("ClickDetector") and item.Parent then
                 -- Teleport tới item (cách 1 đoạn như code cũ của bạn)
                 TweenMove(item.CFrame * CFrame.new(0, 1, -2), nil, 700)
-                task.wait(1)
+                task.wait(.25)
                 fireclickdetector(item.ClickDetector)
             end
         end
