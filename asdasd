@@ -54,7 +54,7 @@ local function TweenMove(Pos, Condition, ForceYPos, Farming)
     local Condition = Condition or function() return true end
     local HighY = ForceYPos and rootPart.Position.Y + ForceYPos or rootPart.Position.Y
     local dt = task.wait() 
-    if ForceYPos then
+    if ForceYPos and GetDistance(targetPosition) > 200 then
         rootPart.CFrame = CFrame.new(rootPart.Position.X, rootPart.Position.Y + ForceYPos, rootPart.Position.Z)
     end
     while GetDistance(targetPosition) > 1 and Condition() do
@@ -119,8 +119,32 @@ for _, container in ipairs(containers) do
         end
     end
 end
-
+local drinkKeywords = {"Juice", "Milk", "Cider", "Lemonade", "Smoothie", "Golden"}
 -- 3. Bắt đầu bay đi farm theo từng đảo
+spawn(function()
+    while wait(1) do
+        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA("Tool") then
+                local name = v.Name
+                local isDrink = false
+                
+                for _, keyword in ipairs(drinkKeywords) do
+                    if string.find(name, keyword) then
+                        isDrink = true
+                        break
+                    end
+                end
+                
+                if isDrink then
+                    -- Code uống nước của bạn ở đây
+                    v.Parent = LocalPlayer.Character
+                    game:GetService 'VirtualUser':CaptureController()
+                    game:GetService 'VirtualUser':Button1Down(Vector2.new(1280, 672))
+                end
+            end
+        end
+    end
+end)
 local root = GetRoot()
 
 for _, island in ipairs(islands) do
@@ -141,6 +165,11 @@ for _, island in ipairs(islands) do
             end
         end
     end
+    for i, v in pairs(game:GetService("Workspace").Island8.Kitchen:GetDescendants()) do
+            if v:IsA("ClickDetector") then
+                fireclickdetector(v)
+            end
+        end
 end
 
 print("✅ Đã farm xong tất cả các đảo!")
