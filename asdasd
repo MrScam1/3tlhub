@@ -35,7 +35,9 @@ local function AllToVector(Val) -- GetDistance Sub Function
     end
     return Returner
 end
-
+local function IsFishMan(pos)
+    return pos.Y < -2000
+end
 local function GetDistance(Object1, Object2)
     Object2 = Object2 or LocalPlayer.Character
     local Pos1, Pos2 = AllToVector(Object1), AllToVector(Object2)
@@ -54,10 +56,10 @@ local function TweenMove(Pos, Condition, ForceYPos, Farming)
     local Condition = Condition or function() return true end
     local HighY = ForceYPos and rootPart.Position.Y + ForceYPos or rootPart.Position.Y
     local dt = task.wait() 
-    if ForceYPos and GetDistance(targetPosition) > 200 then
+    if ForceYPos then
         rootPart.CFrame = CFrame.new(rootPart.Position.X, rootPart.Position.Y + ForceYPos, rootPart.Position.Z)
     end
-    while GetDistance(targetPosition) > 1 and Condition() do
+    while GetDistance(targetPosition) > 10 and Condition() do
 
         if not rootPart.Parent then break end
         local currentPos = rootPart.Position
@@ -76,105 +78,10 @@ local function TweenMove(Pos, Condition, ForceYPos, Farming)
             break
         end
         finalPos = Vector3.new(nextXZ.X, ForceYPos and HighY or rootPart.Position.Y, nextXZ.Z)
+
         
         rootPart.CFrame = CFrame.new(finalPos)
         dt = task.wait() 
     end
 end
--- 1. Lấy danh sách vị trí các đảo (kế thừa từ logic trước)
-local islands = {}
-local specialNames = {["pyramid"] = true, ["marketplace"] = true}
-
-for _, item in ipairs(workspace:GetDescendants()) do
-    local n = string.lower(item.Name)
-    if string.find(n, "island") or specialNames[n] then
-        local pos = item:IsA("Model") and item:GetPivot().Position or (item:FindFirstChild("Part", true) and item:FindFirstChild("Part", true).Position)
-        if pos then
-            table.insert(islands, {Name = item.Name, Pos = pos, Items = {}})
-        end
-    end
-end
-
--- 2. Phân loại Barrels và Crates vào đảo gần nhất
-local containers = {workspace.Barrels.Barrels, workspace.Barrels.Crates}
-
-for _, container in ipairs(containers) do
-    for _, v in ipairs(container:GetChildren()) do
-        if (v.Name == "Barrel" or v.Name == "Crate") and v:FindFirstChild("ClickDetector") then
-            -- Tìm đảo gần cái thùng này nhất
-            local closestIsland = nil
-            local minDistance = math.huge
-            
-            for _, island in ipairs(islands) do
-                local dist = (v.Position - island.Pos).Magnitude
-                if dist < minDistance then
-                    minDistance = dist
-                    closestIsland = island
-                end
-            end
-            
-            if closestIsland then
-                table.insert(closestIsland.Items, v)
-            end
-        end
-    end
-end
-local drinkKeywords = {"Juice", "Milk", "Cider", "Lemonade", "Smoothie", "Golden"}
--- 3. Bắt đầu bay đi farm theo từng đảo
-spawn(function()
-    while wait(1) do
-        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA("Tool") then
-                local name = v.Name
-                local isDrink = false
-                
-                for _, keyword in ipairs(drinkKeywords) do
-                    if string.find(name, keyword) then
-                        isDrink = true
-                        break
-                    end
-                end
-                
-                if isDrink then
-                    -- Code uống nước của bạn ở đây
-                    v.Parent = LocalPlayer.Character
-                    game:GetService 'VirtualUser':CaptureController()
-                    game:GetService 'VirtualUser':Button1Down(Vector2.new(1280, 672))
-                end
-            end
-        end
-    end
-end)
-local root = GetRoot()
-for i, v in pairs(game.Workspace:GetChildren()) do
-            if v.ClassName == "Tool" then
-                v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    .CFrame
-            end
-        end
-for _, island in ipairs(islands) do
-    -- Nếu đảo này có item thì mới bay tới
-    if #island.Items > 0 then
-        print("🏝️ Đang tới đảo: " .. island.Name .. " (Có " .. #island.Items .. " món)")
-        
-        for _, item in ipairs(island.Items) do
-            -- Kiểm tra setting trước khi farm tiếp
-            
-            -- Kiểm tra item còn tồn tại không (tránh lỗi nếu người khác lấy mất)
-            if item and item:FindFirstChild("ClickDetector") and item.Parent then
-                -- Teleport tới item (cách 1 đoạn như code cũ của bạn)
-                TweenMove(item.CFrame * CFrame.new(0, 1, -2), nil, 700)
-                task.wait(1)
-                fireclickdetector(item.ClickDetector)
-                task.wait(1) -- Nghỉ ngắn để tránh bị kick/lag
-            end
-        end
-    end
-    for i, v in pairs(game:GetService("Workspace").Island8.Kitchen:GetDescendants()) do
-            if v:IsA("ClickDetector") then
-                fireclickdetector(v)
-            end
-        end
-end
-
-print("✅ Đã farm xong tất cả các đảo!")
+TweenMove(workspace.Island1.Beach.Position, nil, 100)
