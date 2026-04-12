@@ -1,5 +1,5 @@
 local CONFIG = {
-    Speed = 70,
+    Speed = 500,
     PROMPT_OFFSET = Vector3.new(0, 4, 0),
 }
 local Players = game:GetService("Players")
@@ -86,4 +86,4 @@ local function TweenMove(Pos, Condition, ForceYPos, Farming)
         dt = task.wait() 
     end
 end
-TweenMove(workspace.Island1.Beach.Position, nil, 10000)
+TweenMove(workspace.Island1.Beach.Position, nil, 100)
