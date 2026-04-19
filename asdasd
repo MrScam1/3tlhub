@@ -1,180 +1,52 @@
-local CONFIG = {
-    Speed = 500,
-    PROMPT_OFFSET = Vector3.new(0, 4, 0),
+getgenv().Config = {
+    Misc = {},
+    Farming = {}
 }
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local LocalPlayer = Players.LocalPlayer
-Busy = false
-local lastWallTP = 0
-local WALL_TP_COOLDOWN = 0.2
-local function GetChar()
-    local Char = LocalPlayer.Character
-    if Char then
-        return Char, Char:FindFirstChild("HumanoidRootPart"), Char:FindFirstChild("Humanoid")
-    end
-    return nil, nil, nil
-end
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Window = Fluent:CreateWindow({
+    Title = "God Hub",
+    SubTitle = "Mr.Scam",
+    TabWidth = 120,
+    Size = UDim2.fromOffset(400, 320),
+    Acrylic = true,                        -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.RightControl -- Used when theres no MinimizeKeybind
+})
 
-local function GetRoot()
-    local _, root, _ = GetChar()
-    return root
-end
-local function AllToVector(Val) -- GetDistance Sub Function
-    local Returner
-    if Val then
-        if typeof(Val) == "CFrame" then
-            Returner = Val.Position
-        elseif type(Val) == "vector" then
-            Returner = Val
-        elseif typeof(Val) == "Instance" and Val:IsA("BasePart") then
-            Returner = Val.Position
-        elseif Val:FindFirstChild("HumanoidRootPart") then
-            Returner = Val:FindFirstChild("HumanoidRootPart").Position
-        end
-    end
-    return Returner
-end
-
-local function GetDistance(Object1, Object2)
-    Object2 = Object2 or LocalPlayer.Character
-    local Pos1, Pos2 = AllToVector(Object1), AllToVector(Object2)
-    if Pos1 and Pos2 then
-        return (Pos1 - Pos2).magnitude
-    end
-    return print("Invalid Type", debug.traceback())
-end
-local function TweenMove(Pos, Condition, ForceYPos, Farming)
-    local character, rootPart, humanoid = GetChar()
-    if not rootPart or not humanoid then return end
-    
-    local Speed = CONFIG.Speed
-
-    local targetPosition = AllToVector(Pos)
-    local Condition = Condition or function() return true end
-    local HighY = ForceYPos and rootPart.Position.Y + ForceYPos or rootPart.Position.Y
-    local dt = task.wait() 
-    if ForceYPos and GetDistance(targetPosition) > 200 then
-        rootPart.CFrame = CFrame.new(rootPart.Position.X, rootPart.Position.Y + ForceYPos, rootPart.Position.Z)
-    end
-    while GetDistance(targetPosition) > 10 and Condition() do
-
-        if not rootPart.Parent then break end
-        local currentPos = rootPart.Position
-        local delta = targetPosition - currentPos
-        local distXZ = Vector3.new(delta.X, 0, delta.Z).Magnitude
-        local dirXZ = distXZ > 0 and Vector3.new(delta.X, 0, delta.Z).Unit or Vector3.zero
-
-        local moveDistance = Speed * dt 
-        
-        if moveDistance > distXZ then moveDistance = distXZ end
-
-        local nextXZ = currentPos + dirXZ * moveDistance
-        local finalPos = Vector3.zero
-        if distXZ <= 1 then
-            rootPart.CFrame = CFrame.new(targetPosition)
-            break
-        end
-        finalPos = Vector3.new(nextXZ.X, ForceYPos and HighY or rootPart.Position.Y, nextXZ.Z)
-        
-        rootPart.CFrame = CFrame.new(finalPos)
-        dt = task.wait() 
-    end
-end
--- 1. Lấy danh sách vị trí các đảo (kế thừa từ logic trước)
-local islands = {}
-local specialNames = {["pyramid"] = true, ["marketplace"] = true}
-
-for _, item in ipairs(workspace:GetDescendants()) do
-    local n = string.lower(item.Name)
-    if string.find(n, "island") or specialNames[n] then
-        local pos = item:IsA("Model") and item:GetPivot().Position or (item:FindFirstChild("Part", true) and item:FindFirstChild("Part", true).Position)
-        if pos then
-            table.insert(islands, {Name = item.Name, Pos = pos, Items = {}})
-        end
-    end
-end
-
--- 2. Phân loại Barrels và Crates vào đảo gần nhất
-local containers = {workspace.Barrels.Barrels, workspace.Barrels.Crates}
-
-for _, container in ipairs(containers) do
-    for _, v in ipairs(container:GetChildren()) do
-        if (v.Name == "Barrel" or v.Name == "Crate") and v:FindFirstChild("ClickDetector") then
-            -- Tìm đảo gần cái thùng này nhất
-            local closestIsland = nil
-            local minDistance = math.huge
-            
-            for _, island in ipairs(islands) do
-                local dist = (v.Position - island.Pos).Magnitude
-                if dist < minDistance then
-                    minDistance = dist
-                    closestIsland = island
+getgenv().LoadTab = getgenv().LoadTab or {
+    ["Farming"] = true,
+    ["Misc"] = true,
+}
+local UiOrders = {
+    { Title = "Farming", Icon = "" },
+    --{ Title = "Misc", Icon = "" }
+}
+local UiIntilize = {
+    Farming = {
+        ['Auto Farm Stats'] = {
+            Mode = "Toggle",
+            Children = {
+                Default = Config.Farming['Auto Mixer'] or false,
+                Callback = function(Value)
+                    Config.Farming['Auto Mixer'] = Value
                 end
-            end
-            
-            if closestIsland then
-                table.insert(closestIsland.Items, v)
-            end
+            }
+        }
+    }
+}
+
+local function BuildUi(Tab, Children)
+    for Name, args in Children do
+        if args.Mode == "Toggle" then
+            Tab:AddToggle("Toggle",{
+                Title = Name,
+                Default = args.Children.Default,
+                Callback = args.Children.Callback
+            })
         end
     end
 end
-local drinkKeywords = {"Juice", "Milk", "Cider", "Lemonade", "Smoothie", "Golden"}
--- 3. Bắt đầu bay đi farm theo từng đảo
-spawn(function()
-    while wait(1) do
-        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA("Tool") then
-                local name = v.Name
-                local isDrink = false
-                
-                for _, keyword in ipairs(drinkKeywords) do
-                    if string.find(name, keyword) then
-                        isDrink = true
-                        break
-                    end
-                end
-                
-                if isDrink then
-                    -- Code uống nước của bạn ở đây
-                    v.Parent = LocalPlayer.Character
-                    game:GetService 'VirtualUser':CaptureController()
-                    game:GetService 'VirtualUser':Button1Down(Vector2.new(1280, 672))
-                end
-            end
-        end
-    end
-end)
-local root = GetRoot()
-while wait() do
-for i, v in pairs(game.Workspace:GetChildren()) do
-            if v.ClassName == "Tool" then
-                v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart
-                    .CFrame
-            end
-        end
-for _, island in ipairs(islands) do
-    -- Nếu đảo này có item thì mới bay tới
-    if #island.Items > 0 then
-        print("🏝️ Đang tới đảo: " .. island.Name .. " (Có " .. #island.Items .. " món)")
-        
-        for _, item in ipairs(island.Items) do
-            -- Kiểm tra setting trước khi farm tiếp
-            
-            -- Kiểm tra item còn tồn tại không (tránh lỗi nếu người khác lấy mất)
-            if item and item:FindFirstChild("ClickDetector") and item.Parent then
-                -- Teleport tới item (cách 1 đoạn như code cũ của bạn)
-                TweenMove(item.CFrame * CFrame.new(0, 1, -2), nil, 700)
-                task.wait(.25)
-                fireclickdetector(item.ClickDetector)
-            end
-        end
-    end
-    for i, v in pairs(game:GetService("Workspace").Island8.Kitchen:GetDescendants()) do
-            if v:IsA("ClickDetector") then
-                fireclickdetector(v)
-            end
-        end
+for _, Children in UiOrders do
+    local Tab = Window:AddTab({ Title = Children.Title, Icon = Children.Icon })
+    BuildUi(Tab, UiIntilize[Children.Title])
 end
-end
-print("✅ Đã farm xong tất cả các đảo!")
