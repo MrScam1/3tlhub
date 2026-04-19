@@ -1,7 +1,3 @@
-getgenv().Config = {
-    Misc = {},
-    Farming = {}
-}
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local Window = Fluent:CreateWindow({
     Title = "God Hub",
@@ -28,6 +24,7 @@ local UiIntilize = {
             Children = {
                 Default = Config.Farming['Auto Mixer'] or false,
                 Callback = function(Value)
+                    print(123)
                     Config.Farming['Auto Mixer'] = Value
                 end
             }
