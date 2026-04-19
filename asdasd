@@ -15,7 +15,7 @@ getgenv().LoadTab = getgenv().LoadTab or {
 }
 local UiOrders = {
     { Title = "Farming", Icon = "" },
-    --{ Title = "Misc", Icon = "" }
+    { Title = "Misc", Icon = "" }
 }
 local UiIntilize = {
     Farming = {
@@ -24,8 +24,18 @@ local UiIntilize = {
             Children = {
                 Default = Config.Farming['Auto Mixer'] or false,
                 Callback = function(Value)
-                    print(123)
                     Config.Farming['Auto Mixer'] = Value
+                end
+            }
+        }
+    },
+    Misc = {
+        ['Auto Spawn'] = {
+            Mode = "Toggle",
+            Children = {
+                Default = Config.Misc['Auto Spawn'] or false,
+                Callback = function(Value)
+                    Config.Misc['Auto Spawn'] = Value
                 end
             }
         }
@@ -35,11 +45,7 @@ local UiIntilize = {
 local function BuildUi(Tab, Children)
     for Name, args in Children do
         if args.Mode == "Toggle" then
-            Tab:AddToggle("Toggle",{
-                Title = Name,
-                Default = args.Children.Default,
-                Callback = args.Children.Callback
-            })
+            Tab:AddToggle("Toggle",{Title = Name, Default = args.Children.Default, Callback = args.Children.Callback})
         end
     end
 end
